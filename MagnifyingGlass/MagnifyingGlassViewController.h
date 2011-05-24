@@ -46,6 +46,7 @@
 // MagnifyingGlass Public Methods
 - (IBAction)updateMagnifyingGlass;
 
+// Method to add a new image...not sure if this'll be in Magnifying Glass or not.
 - (IBAction)setNewImage:(UIImage *)anImage inImageView:(UIView *)anImageView;
 
 // View Controller Action Method

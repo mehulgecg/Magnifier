@@ -8,7 +8,7 @@
 
 #import "MagnifyAppDelegate.h"
 
-#import "MainViewController.h"
+#import "MagnifyingGlassViewController.h"
 
 @implementation MagnifyAppDelegate
 
@@ -21,13 +21,13 @@
 
 @synthesize persistentStoreCoordinator=__persistentStoreCoordinator;
 
-@synthesize mainViewController=_mainViewController;
+@synthesize magnifyingGlassViewController=_magnifyingGlassViewController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     // Add the main view controller's view to the window and display.
-    self.window.rootViewController = self.mainViewController;
+    self.window.rootViewController = self.magnifyingGlassViewController;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -74,7 +74,7 @@
     [__managedObjectContext release];
     [__managedObjectModel release];
     [__persistentStoreCoordinator release];
-    [_mainViewController release];
+    [_magnifyingGlassViewController release];
     [super dealloc];
 }
 
@@ -137,7 +137,7 @@
     {
         return __managedObjectModel;
     }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"KrazyKim" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"MagnifyingGlass" withExtension:@"momd"];
     __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
     return __managedObjectModel;
 }
@@ -153,7 +153,7 @@
         return __persistentStoreCoordinator;
     }
     
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"KrazyKim.sqlite"];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"MagnifyingGlass.sqlite"];
     
     NSError *error = nil;
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

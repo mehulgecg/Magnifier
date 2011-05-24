@@ -6,7 +6,7 @@
 //  Copyright 2011 PortableFrontier. All rights reserved.
 //
 
-#import "MainViewController.h"
+#import "MagnifyingGlassViewController.h"
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -22,7 +22,7 @@
 
 
 
-@interface MainViewController () 
+@interface MagnifyingGlassViewController () 
 
 // MagnifyingGlass Private Methods
 - (void)resizeMagnifyingGlass;
@@ -44,7 +44,7 @@
 
 
 
-@implementation MainViewController
+@implementation MagnifyingGlassViewController
 
 
 

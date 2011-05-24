@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class MainViewController;
+@class MagnifyingGlassViewController;
 
 @interface MagnifyAppDelegate : NSObject <UIApplicationDelegate> {
 
@@ -23,6 +23,6 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
-@property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
+@property (nonatomic, retain) IBOutlet MagnifyingGlassViewController *magnifyingGlassViewController;
 
 @end

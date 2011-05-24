@@ -15,11 +15,11 @@
 		E6BD64AE138B87A700E8BFB2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64AD138B87A700E8BFB2 /* main.m */; };
 		E6BD64D9138B87FB00E8BFB2 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64CD138B87FB00E8BFB2 /* InfoViewController.m */; };
 		E6BD64DA138B87FB00E8BFB2 /* iPhone4.png in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64CE138B87FB00E8BFB2 /* iPhone4.png */; };
-		E6BD64DB138B87FB00E8BFB2 /* KrazyKim.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64CF138B87FB00E8BFB2 /* KrazyKim.xcdatamodeld */; };
+		E6BD64DB138B87FB00E8BFB2 /* MagnifyingGlass.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64CF138B87FB00E8BFB2 /* MagnifyingGlass.xcdatamodeld */; };
 		E6BD64DC138B87FB00E8BFB2 /* KrazyKimWarMap.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64D1138B87FB00E8BFB2 /* KrazyKimWarMap.jpg */; };
 		E6BD64DD138B87FB00E8BFB2 /* KrazyKimWarMap.png in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64D2138B87FB00E8BFB2 /* KrazyKimWarMap.png */; };
 		E6BD64DE138B87FB00E8BFB2 /* MagnifyAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64D4138B87FB00E8BFB2 /* MagnifyAppDelegate.m */; };
-		E6BD64DF138B87FB00E8BFB2 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64D6138B87FB00E8BFB2 /* MainViewController.m */; };
+		E6BD64DF138B87FB00E8BFB2 /* MagnifyingGlassViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64D6138B87FB00E8BFB2 /* MagnifyingGlassViewController.m */; };
 		E6BD64E0138B87FB00E8BFB2 /* Mercury-First_Color_Image.png in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64D7138B87FB00E8BFB2 /* Mercury-First_Color_Image.png */; };
 		E6BD64E1138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64D8138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg */; };
 		E6BD64E3138B883300E8BFB2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64E2138B883300E8BFB2 /* MainWindow.xib */; };
@@ -46,8 +46,8 @@
 		E6BD64D2138B87FB00E8BFB2 /* KrazyKimWarMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = KrazyKimWarMap.png; sourceTree = "<group>"; };
 		E6BD64D3138B87FB00E8BFB2 /* MagnifyAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifyAppDelegate.h; sourceTree = "<group>"; };
 		E6BD64D4138B87FB00E8BFB2 /* MagnifyAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifyAppDelegate.m; sourceTree = "<group>"; };
-		E6BD64D5138B87FB00E8BFB2 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		E6BD64D6138B87FB00E8BFB2 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		E6BD64D5138B87FB00E8BFB2 /* MagnifyingGlassViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = MagnifyingGlassViewController.h; sourceTree = "<group>"; };
+		E6BD64D6138B87FB00E8BFB2 /* MagnifyingGlassViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifyingGlassViewController.m; sourceTree = "<group>"; };
 		E6BD64D7138B87FB00E8BFB2 /* Mercury-First_Color_Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Mercury-First_Color_Image.png"; sourceTree = "<group>"; };
 		E6BD64D8138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = NASA_Leaders_Tesla_Testdrive_1024.jpg; sourceTree = "<group>"; };
 		E6BD64E2138B883300E8BFB2 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -104,15 +104,15 @@
 		E6BD64A6138B87A700E8BFB2 /* MagnifyingGlass */ = {
 			isa = PBXGroup;
 			children = (
-				E6BD64CC138B87FB00E8BFB2 /* InfoViewController.h */,
-				E6BD64CD138B87FB00E8BFB2 /* InfoViewController.m */,
 				E6BD64D3138B87FB00E8BFB2 /* MagnifyAppDelegate.h */,
 				E6BD64D4138B87FB00E8BFB2 /* MagnifyAppDelegate.m */,
-				E6BD64D5138B87FB00E8BFB2 /* MainViewController.h */,
-				E6BD64D6138B87FB00E8BFB2 /* MainViewController.m */,
+				E6BD64D5138B87FB00E8BFB2 /* MagnifyingGlassViewController.h */,
+				E6BD64D6138B87FB00E8BFB2 /* MagnifyingGlassViewController.m */,
+				E6BD64CC138B87FB00E8BFB2 /* InfoViewController.h */,
+				E6BD64CD138B87FB00E8BFB2 /* InfoViewController.m */,
 				E6BD64E9138B88B000E8BFB2 /* Graphics */,
 				E6BD64E8138B888500E8BFB2 /* Xib's */,
-				E6BD64CF138B87FB00E8BFB2 /* KrazyKim.xcdatamodeld */,
+				E6BD64CF138B87FB00E8BFB2 /* MagnifyingGlass.xcdatamodeld */,
 				E6BD64A7138B87A700E8BFB2 /* Supporting Files */,
 			);
 			path = MagnifyingGlass;
@@ -222,9 +222,9 @@
 			files = (
 				E6BD64AE138B87A700E8BFB2 /* main.m in Sources */,
 				E6BD64D9138B87FB00E8BFB2 /* InfoViewController.m in Sources */,
-				E6BD64DB138B87FB00E8BFB2 /* KrazyKim.xcdatamodeld in Sources */,
+				E6BD64DB138B87FB00E8BFB2 /* MagnifyingGlass.xcdatamodeld in Sources */,
 				E6BD64DE138B87FB00E8BFB2 /* MagnifyAppDelegate.m in Sources */,
-				E6BD64DF138B87FB00E8BFB2 /* MainViewController.m in Sources */,
+				E6BD64DF138B87FB00E8BFB2 /* MagnifyingGlassViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,12 +326,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		E6BD64CF138B87FB00E8BFB2 /* KrazyKim.xcdatamodeld */ = {
+		E6BD64CF138B87FB00E8BFB2 /* MagnifyingGlass.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				E6BD64D0138B87FB00E8BFB2 /* KrazyKim.xcdatamodel */,
 			);
 			currentVersion = E6BD64D0138B87FB00E8BFB2 /* KrazyKim.xcdatamodel */;
+			name = MagnifyingGlass.xcdatamodeld;
 			path = KrazyKim.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

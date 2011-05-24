@@ -11,7 +11,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-@interface MainViewController : UIViewController <InfoViewControllerDelegate, UIGestureRecognizerDelegate> 
+@interface MagnifyingGlassViewController : UIViewController <InfoViewControllerDelegate, UIGestureRecognizerDelegate> 
 {
     UIView          *_worldMapView;
     UIImageView     *_worldMapImageView;

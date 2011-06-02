@@ -503,7 +503,7 @@
 	// Pinch Gesture (for zoom)
 	gestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleZoomFromGestureRecognizer:)];
 	self.pinchRecognizer                    = (UIPinchGestureRecognizer *)gestureRecognizer;
-	[self.worldMapView addGestureRecognizer:pinchRecognizer];
+	[self.view addGestureRecognizer:pinchRecognizer];
 	pinchRecognizer.delegate                = self;
 	[gestureRecognizer release];
 	
@@ -590,7 +590,9 @@
         }
         
         self.magnifyingGlassLabel.text = [NSString stringWithString:[[NSNumber numberWithFloat:tempScale] stringValue]];
-        [UIView animateWithDuration:0.75 animations:^{
+        
+        
+        [UIView animateWithDuration:0.75 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
             self.magnifyingGlassLabel.alpha = 1.0;
         }completion:^( BOOL finished ){
             if (finished) 
@@ -599,37 +601,25 @@
                     NSString *zoomString = [NSString stringWithFormat:@"%2.1f", self.magnifyingGlassZoom];
                     zoomString = [zoomString stringByAppendingString:@"X"];
                     self.magnifyingGlassLabel.text = zoomString;
-                }completion:^( BOOL finallyFinished )
+                }completion:^( BOOL finishing )
                  {
-                     if (finallyFinished) 
+                     if (finishing) 
                      {
-                         [UIView animateWithDuration:0.75 animations:^{
+                         [UIView animateWithDuration:0.75 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                              self.magnifyingGlassLabel.alpha = 0.0;
-                         }];
+                         }completion:^( BOOL finallyFinished )
+                          {
+                              // We're done...
+                          }];
                      }
                  }];
             }
         }];
         
+        
         NSString *zoomString = [NSString stringWithFormat:@"%2.1f", self.magnifyingGlassZoom];
         zoomString = [zoomString stringByAppendingString:@"X"];
         self.magnifyingGlassLabel.text = zoomString;
-        //
-        // Old zoom code...not sure what I was thinking here :-(
-        //
-//        if ( self.magnifyingGlassZoom <= 1.0 ) 
-//        {
-//            self.magnifyingGlassZoom      += ( ( 1.0 - gestureRecognizer.scale ) / ( self.magnifyingGlassView.frame.size.width ) ) * [[UIScreen mainScreen] scale];
-//        }
-//        if ( self.magnifyingGlassZoom <= 0.2 ) 
-//        {
-//            self.magnifyingGlassZoom      = 0.2;
-//        }
-//        if ( self.magnifyingGlassZoom > 1.0 ) 
-//        {
-//            self.magnifyingGlassZoom      = 1.0;
-//        }
-        
         
         NSLog(@"self.magnifyingGlassZoom = %f\n\n\n", self.magnifyingGlassZoom);
          

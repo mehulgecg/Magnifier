@@ -19,6 +19,7 @@
     CGSize          _worldImageSize;
     
     UIView          *_magnifyingGlassView;
+    UILabel *magnifyingGlassLabel;
 }
 
 @property (nonatomic, retain)           NSManagedObjectContext      *managedObjectContext;
@@ -34,8 +35,9 @@
 @property (nonatomic, retain) IBOutlet  UIView          *magnifyingGlassView;
 @property                               CGFloat         maxMagnifyingGlassDiameter;
 @property                               CGFloat         minMagnifyingGlassDiameter;
-@property                               CGFloat         magnification;
-@property                               CGFloat         magnificationScale;
+@property                               CGFloat         magnifyingGlassZoom;
+@property                               CGFloat         magnifyingGlassScale;
+@property (nonatomic, retain) IBOutlet UILabel *magnifyingGlassLabel;
 
 @property (nonatomic, retain)           UITapGestureRecognizer      *tapRecognizer;
 @property (nonatomic, retain)           UIPanGestureRecognizer      *panRecognizer;
@@ -44,7 +46,7 @@
 
 
 // MagnifyingGlass Public Methods
-- (IBAction)updateMagnifyingGlass;
+- (IBAction)zoomMagnifyingGlass;
 
 // Method to add a new image...not sure if this'll be in Magnifying Glass or not.
 - (IBAction)setNewImage:(UIImage *)anImage inImageView:(UIView *)anImageView;

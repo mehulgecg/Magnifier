@@ -122,7 +122,7 @@
     
     [self setNewImage:[UIImage imageWithCGImage:[UIImage imageNamed:@"NASA_Leaders_Tesla_Testdrive_1024.jpg"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp] inImageView:self.worldMapImageView];
     
-    [self zoomMagnifyingGlass];
+    [self updateMagnifyingGlass];
 }
 
 
@@ -223,7 +223,7 @@
 
 
 # pragma mark MagnifyingGlass Methods
-- (IBAction)zoomMagnifyingGlass
+- (IBAction)updateMagnifyingGlass
 {
     NSLog(@"-updateReticle");
     
@@ -232,11 +232,6 @@
 
     CGSize newReticleSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
                                        self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
-//    CGPoint newReticleOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) * self.magnifyingGlassZoom, 
-//                                           self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) * self.magnifyingGlassZoom );
-//    
-//    CGSize newReticleSize = CGSizeMake(self.magnifyingGlassView.frame.size.width * self.magnifyingGlassZoom, 
-//                                       self.magnifyingGlassView.frame.size.height * self.magnifyingGlassZoom);
 
     
     CGFloat screenScale = [[UIScreen mainScreen] scale];
@@ -519,8 +514,16 @@
 
 - (void)handleDoubleTapFromGestureRecognizer:(UITapGestureRecognizer *)recognizer
 {
-    self.magnifyingGlassView.layer.position = CGPointMake(160, 230.0);
-    [self zoomMagnifyingGlass];
+    [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.05, 1.05);
+        self.magnifyingGlassView.layer.position = CGPointMake(160, 100.0);
+
+
+    }completion:^( BOOL finished )
+     { 
+         self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.0, 1.0);
+        [self updateMagnifyingGlass];
+     }];
 }
 
 
@@ -547,15 +550,37 @@
 	// 
 	//  Y
 	
-    if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged) 
+
+    CGFloat tempZoom = self.magnifyingGlassZoom;
+    
+    if ([gestureRecognizer state] == UIGestureRecognizerStateBegan)
     {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.25, 1.25);
+
+            [self updateMagnifyingGlass];
+        }];
+    }
+    
+    if ([gestureRecognizer state] == UIGestureRecognizerStateChanged) 
+    {
+        self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.25, 1.25);
+        
         CGPoint translation = [gestureRecognizer translationInView:self.view];
         
         [self.magnifyingGlassView setCenter:CGPointMake(self.magnifyingGlassView.center.x + translation.x, self.magnifyingGlassView.center.y + translation.y)];
+        
         [gestureRecognizer setTranslation:CGPointZero inView:[self.magnifyingGlassView superview]];
         
-        [UIView animateWithDuration:0.25 animations:^{
-            [self zoomMagnifyingGlass];
+        [self updateMagnifyingGlass];
+    }
+    
+    if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
+    {
+        [UIView animateWithDuration:0.2 animations:^{
+            self.magnifyingGlassZoom = tempZoom;
+            self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.0, 1.0);
+            [self updateMagnifyingGlass];
         }];
     }
 }
@@ -567,7 +592,14 @@
     //
     // This sets the spacing between layers.
     //
-    if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged) 
+    if ([gestureRecognizer state] == UIGestureRecognizerStateBegan)
+    {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.magnifyingGlassLabel.alpha = 1.0;
+        }];
+    }
+    
+    if ([gestureRecognizer state] == UIGestureRecognizerStateChanged) 
     {
         NSLog(@"\n\n\nZoom Scale = %f", gestureRecognizer.scale);
         
@@ -589,41 +621,18 @@
             self.magnifyingGlassZoom = 3.0;
         }
         
-        self.magnifyingGlassLabel.text = [NSString stringWithString:[[NSNumber numberWithFloat:tempScale] stringValue]];
-        
-        
-        [UIView animateWithDuration:0.75 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            self.magnifyingGlassLabel.alpha = 1.0;
-        }completion:^( BOOL finished ){
-            if (finished) 
-            {
-                [UIView animateWithDuration:1.0 animations:^{
-                    NSString *zoomString = [NSString stringWithFormat:@"%2.1f", self.magnifyingGlassZoom];
-                    zoomString = [zoomString stringByAppendingString:@"X"];
-                    self.magnifyingGlassLabel.text = zoomString;
-                }completion:^( BOOL finishing )
-                 {
-                     if (finishing) 
-                     {
-                         [UIView animateWithDuration:0.75 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                             self.magnifyingGlassLabel.alpha = 0.0;
-                         }completion:^( BOOL finallyFinished )
-                          {
-                              // We're done...
-                          }];
-                     }
-                 }];
-            }
-        }];
-        
-        
         NSString *zoomString = [NSString stringWithFormat:@"%2.1f", self.magnifyingGlassZoom];
         zoomString = [zoomString stringByAppendingString:@"X"];
         self.magnifyingGlassLabel.text = zoomString;
         
-        NSLog(@"self.magnifyingGlassZoom = %f\n\n\n", self.magnifyingGlassZoom);
-         
-        [self zoomMagnifyingGlass];
+        [self updateMagnifyingGlass];
+    }
+    
+    if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
+    {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.magnifyingGlassLabel.alpha = 0.0;
+        }];
     }
 } 
 
@@ -633,7 +642,7 @@
 {
     if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged) 
     {
-        CGFloat reticleScaleIncrement   = [gestureRecognizer rotation] * 0.002 * [[UIScreen mainScreen] scale];
+        CGFloat reticleScaleIncrement   = [gestureRecognizer rotation];
 
         CGFloat tempReticleScale        = self.magnifyingGlassScale + reticleScaleIncrement;
         CGFloat tempReticleDiameter     = self.magnifyingGlassView.frame.size.width * tempReticleScale;

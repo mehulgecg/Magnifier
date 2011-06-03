@@ -33,6 +33,7 @@
 @property                               CGFloat         yScale;
 
 @property (nonatomic, retain) IBOutlet  UIView          *magnifyingGlassView;
+@property                               CGFloat         magnifyingGlassDiameter;
 @property                               CGFloat         maxMagnifyingGlassDiameter;
 @property                               CGFloat         minMagnifyingGlassDiameter;
 @property                               CGFloat         magnifyingGlassZoom;

@@ -59,6 +59,7 @@
 @synthesize yScale;
 
 @synthesize magnifyingGlassView         = _magnifyingGlassView;
+@synthesize magnifyingGlassDiameter;
 @synthesize maxMagnifyingGlassDiameter;
 @synthesize minMagnifyingGlassDiameter;
 @synthesize magnifyingGlassZoom;
@@ -108,8 +109,10 @@
     //
     // Reticle ivars
     //
-    self.maxMagnifyingGlassDiameter = 240.0;
-    self.minMagnifyingGlassDiameter =  60.0;
+    self.maxMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width - 100.0;
+    self.minMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width - 220.0;
+    self.magnifyingGlassDiameter    = self.minMagnifyingGlassDiameter;
+    
     self.magnifyingGlassZoom    =   1.0;
     self.magnifyingGlassScale   =   1.0;
     self.magnifyingGlassLabel.alpha = 0.0;
@@ -284,56 +287,40 @@
 {
     NSLog(@"\n\nResizing reticle");
     
-    CGPoint newMagnifyingGlassViewOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) * self.magnifyingGlassScale, 
-                                                       self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) * self.magnifyingGlassScale );
+    CGPoint newMagnifyingGlassViewOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ), 
+                                                       self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
     
-    CGSize newMagnifyingGlassViewSize = CGSizeMake(self.magnifyingGlassView.frame.size.width * self.magnifyingGlassScale, 
-                                                   self.magnifyingGlassView.frame.size.height * self.magnifyingGlassScale);
+    CGSize newMagnifyingGlassViewSize = CGSizeMake(self.magnifyingGlassDiameter, 
+                                                   self.magnifyingGlassDiameter);
     
-    NSLog(@"magnificationScale = %f", self.magnifyingGlassScale);
+    NSLog(@"magnifyingGlassDiameter = %f", self.magnifyingGlassDiameter);
     
-    
-//    self.magnifyingGlassView.transform = CGAffineTransformMakeScale(screenScale, screenScale);
-    self.magnifyingGlassView.transform = CGAffineTransformMakeScale(self.magnifyingGlassScale, self.magnifyingGlassScale);
-    
-    
-    
-    
-//    NSLog(@"newReticleRect:%f, %f, %f, %f\n\n\n", newReticleOrigin.x, newReticleOrigin.y, newReticleSize.width, newReticleSize.height);
-    
-/*    
-//    if (self.reticleView) 
+    if (self.magnifyingGlassView.frame.size.width >= self.minMagnifyingGlassDiameter && self.magnifyingGlassView.frame.size.width <= self.maxMagnifyingGlassDiameter) 
     {
-        if (self.magnifyingGlassView.frame.size.width >= self.minMagnifyingGlassDiameter && self.magnifyingGlassView.frame.size.width <= self.maxMagnifyingGlassDiameter) 
-        {
-            NSLog(@"reticle.frame.size.width = %f", self.magnifyingGlassView.frame.size.width);
-            NSLog(@"reticle just got resized...");
-            self.magnifyingGlassView.frame = CGRectMake(newMagnifyingGlassViewOrigin.x, newMagnifyingGlassViewOrigin.y, newMagnifyingGlassViewSize.width, newMagnifyingGlassViewSize.height);
-        }   
-        
-        if (self.magnifyingGlassView.frame.size.width < self.minMagnifyingGlassDiameter) 
-        {
-            NSLog(@"reticle too small-resizing");
-            CGSize minReticleSize       = CGSizeMake(self.minMagnifyingGlassDiameter, self.minMagnifyingGlassDiameter);
-            CGPoint minReticleOrigin    = CGPointMake(self.magnifyingGlassView.center.x - self.minMagnifyingGlassDiameter / 2.0, 
-                                                      self.magnifyingGlassView.center.y - self.minMagnifyingGlassDiameter / 2.0);
-            self.magnifyingGlassView.frame      = CGRectMake(minReticleOrigin.x, minReticleOrigin.y, minReticleSize.width, minReticleSize.height);
-        }
-        
-        if (self.magnifyingGlassView.frame.size.width > self.maxMagnifyingGlassDiameter) 
-        {
-            NSLog(@"reticle too large-resizing");
-            CGSize maxReticleSize       = CGSizeMake(self.maxMagnifyingGlassDiameter, self.maxMagnifyingGlassDiameter);
-            CGPoint maxReticleOrigin    = CGPointMake(self.magnifyingGlassView.center.x - self.maxMagnifyingGlassDiameter / 2.0,
-                                                      self.magnifyingGlassView.center.y - self.maxMagnifyingGlassDiameter / 2.0);
-            self.magnifyingGlassView.frame      = CGRectMake(maxReticleOrigin.x, maxReticleOrigin.y, maxReticleSize.width, maxReticleSize.height);
-        }
-        [self updateMagnifyingGlass];
-        
+        NSLog(@"reticle.frame.size.width = %f", self.magnifyingGlassView.frame.size.width);
+        NSLog(@"reticle just got resized...");
+        self.magnifyingGlassView.frame = CGRectMake(newMagnifyingGlassViewOrigin.x, newMagnifyingGlassViewOrigin.y, newMagnifyingGlassViewSize.width, newMagnifyingGlassViewSize.height);
+    }   
+    
+    if (self.magnifyingGlassView.frame.size.width < self.minMagnifyingGlassDiameter) 
+    {
+        NSLog(@"reticle too small-resizing");
+        CGSize minReticleSize       = CGSizeMake(self.minMagnifyingGlassDiameter, self.minMagnifyingGlassDiameter);
+        CGPoint minReticleOrigin    = CGPointMake(self.magnifyingGlassView.center.x - self.minMagnifyingGlassDiameter / 2.0, 
+                                                  self.magnifyingGlassView.center.y - self.minMagnifyingGlassDiameter / 2.0);
+        self.magnifyingGlassView.frame      = CGRectMake(minReticleOrigin.x, minReticleOrigin.y, minReticleSize.width, minReticleSize.height);
     }
- */
     
-    
+    if (self.magnifyingGlassView.frame.size.width > self.maxMagnifyingGlassDiameter) 
+    {
+        NSLog(@"reticle too large-resizing");
+        CGSize maxReticleSize       = CGSizeMake(self.maxMagnifyingGlassDiameter, self.maxMagnifyingGlassDiameter);
+        CGPoint maxReticleOrigin    = CGPointMake(self.magnifyingGlassView.center.x - self.maxMagnifyingGlassDiameter / 2.0,
+                                                  self.magnifyingGlassView.center.y - self.maxMagnifyingGlassDiameter / 2.0);
+        self.magnifyingGlassView.frame      = CGRectMake(maxReticleOrigin.x, maxReticleOrigin.y, maxReticleSize.width, maxReticleSize.height);
+    }
+    [self updateMagnifyingGlass];
+
 }
 
 
@@ -505,7 +492,7 @@
 	// Rotation Gesture (for increasing reticle size)
     gestureRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(handleResizeFromGestureRecognizer:)];
     self.rotationRecognizer                 = (UIRotationGestureRecognizer *)gestureRecognizer;
-    [self.worldMapView addGestureRecognizer:rotationRecognizer];
+    [self.view addGestureRecognizer:rotationRecognizer];
     rotationRecognizer.delegate             = self;
     [gestureRecognizer release];
 }
@@ -603,7 +590,7 @@
     {
         NSLog(@"\n\n\nZoom Scale = %f", gestureRecognizer.scale);
         
-        CGFloat tempScale = gestureRecognizer.scale * 2.0;
+        CGFloat tempScale = gestureRecognizer.scale * 1.75;
         
         
         if ( self.magnifyingGlassZoom >= 1.0 ) 
@@ -642,40 +629,28 @@
 {
     if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged) 
     {
-        CGFloat reticleScaleIncrement   = [gestureRecognizer rotation];
-
-        CGFloat tempReticleScale        = self.magnifyingGlassScale + reticleScaleIncrement;
-        CGFloat tempReticleDiameter     = self.magnifyingGlassView.frame.size.width * tempReticleScale;
+        CGFloat reticleScaleIncrement   = [gestureRecognizer rotation] * 180.0 / M_PI;
         
         
-        if (tempReticleDiameter > self.minMagnifyingGlassDiameter && tempReticleDiameter < self.maxMagnifyingGlassDiameter) 
-        {
-            self.magnifyingGlassScale        = self.magnifyingGlassScale + reticleScaleIncrement;
-            
-            tempReticleDiameter = self.magnifyingGlassView.frame.size.width * self.magnifyingGlassScale;
-            
-            //
-            // I'd really like to put some code in here that would allow me to detect a
-            // change in the direction of rotation and reset the rotation to 0.0;
-            //
-        }
-        
-        if (tempReticleDiameter >= self.maxMagnifyingGlassDiameter) 
-        {
-            self.magnifyingGlassScale -= self.magnifyingGlassScale / self.maxMagnifyingGlassDiameter;
-        }
+        self.magnifyingGlassDiameter += ( reticleScaleIncrement / 10.0 );
         
         
-        if (tempReticleDiameter <= self.minMagnifyingGlassDiameter) 
-        {
-            self.magnifyingGlassScale += self.magnifyingGlassScale / self.minMagnifyingGlassDiameter;
-        }
+//        if (self.magnifyingGlassDiameter > self.maxMagnifyingGlassDiameter) 
+//        {
+//            self.magnifyingGlassDiameter = self.maxMagnifyingGlassDiameter;
+//        }
+//        
+//        
+//        if (self.magnifyingGlassDiameter < self.minMagnifyingGlassDiameter) 
+//        {
+//            self.magnifyingGlassDiameter = self.minMagnifyingGlassDiameter;
+//        }
         
         [self resizeMagnifyingGlass];
          
         
         NSLog(@"reticleScaleIncrement = %f", reticleScaleIncrement);
-        NSLog(@"resulting reticleScale = %f\n\n", self.magnifyingGlassScale);
+        NSLog(@"resulting reticleDiameter = %f\n\n", self.magnifyingGlassDiameter);
         
     }
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 

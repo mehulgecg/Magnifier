@@ -73,7 +73,7 @@
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<object class="IBUILabel" id="547358575">
 										<reference key="NSNextResponder" ref="795413899"/>
-										<int key="NSvFlags">292</int>
+										<int key="NSvFlags">319</int>
 										<string key="NSFrame">{{20, 32}, {60, 36}}</string>
 										<reference key="NSSuperview" ref="795413899"/>
 										<reference key="NSWindow"/>
@@ -83,10 +83,10 @@
 										<int key="IBUIContentMode">7</int>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-										<string key="IBUIText">Label</string>
+										<string key="IBUIText"/>
 										<object class="NSFont" key="IBUIFont">
 											<string key="NSName">Futura-Medium</string>
-											<double key="NSSize">18</double>
+											<double key="NSSize">48</double>
 											<int key="NSfFlags">16</int>
 										</object>
 										<object class="NSColor" key="IBUITextColor">
@@ -350,7 +350,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>setNewImage:inImageView:</string>
 							<string>showInfo:</string>
-							<string>zoomMagnifyingGlass</string>
+							<string>updateMagnifyingGlass</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -365,7 +365,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>setNewImage:inImageView:</string>
 							<string>showInfo:</string>
-							<string>zoomMagnifyingGlass</string>
+							<string>updateMagnifyingGlass</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -378,7 +378,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">zoomMagnifyingGlass</string>
+								<string key="name">updateMagnifyingGlass</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>

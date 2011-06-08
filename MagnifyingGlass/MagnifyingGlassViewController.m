@@ -17,15 +17,11 @@
 
 
 
-//static CGFloat    kMinReticleSize       =  60.0; // Smallest reticle
-//static CGFloat    kMaxReticleSize       = 160.0; // Largest reticle size
-
-
-
 @interface MagnifyingGlassViewController () 
 
 // MagnifyingGlass Private Methods
-- (void)resizeMagnifyingGlass;
+- (void)updateMagnifyingGlassForZoom;
+- (void)updateMagnifyingGlassForDiameter;
 - (void)updateMagnifyingGlassLabelForZoom;
 - (void)updateMagnifyingGlassLabelForDiameter;
 
@@ -41,6 +37,7 @@
 - (void)handlePanFromGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer;
 - (void)handleZoomFromGestureRecognizer:(UIPinchGestureRecognizer *)gestureRecognizer;
 - (void)handleResizeFromGestureRecognizer:(UIRotationGestureRecognizer *)gestureRecognizer;
+- (void)handlePanResizeFromGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer;
 - (void)userJustDoubleTapped:(NSError *)error;
 @end
 
@@ -72,33 +69,11 @@
 @synthesize panRecognizer;
 @synthesize pinchRecognizer;
 @synthesize rotationRecognizer;
+@synthesize panResizeRecognizer;
 
 
 
-#pragma mark - View Controller Methods
-
-- (void)dealloc
-{
-    [_managedObjectContext release];
-    
-    [_worldMapImageView release];
-    [_worldMapImage release];
-    [_worldMapView release];
-    
-    [_magnifyingGlassView release];
-    
-    [tapRecognizer release];
-    [panRecognizer release];
-    [pinchRecognizer release];
-    [rotationRecognizer release];
-    
-    [magnifyingGlassLabel release];
-    [super dealloc];
-}
-
-
-
-#pragma mark - View lifecycle
+#pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad
 {
@@ -111,9 +86,11 @@
     //
     // Reticle ivars
     //
-    self.maxMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width - 100.0;
-    self.minMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width - 220.0;
+    self.maxMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width * 0.7;
+    self.minMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width * 0.3;
     self.magnifyingGlassDiameter    = self.minMagnifyingGlassDiameter;
+    
+    self.magnifyingGlassView.layer.borderColor = [[UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0] CGColor];
     
     self.magnifyingGlassZoom    =   1.0;
     self.magnifyingGlassScale   =   1.0;
@@ -141,13 +118,10 @@
 
 - (void)viewDidUnload
 {
-    [_worldMapView release];
     self.worldMapView   = nil;
     
-    [_worldMapImageView release];
     self.worldMapImageView  = nil;
     
-    [_worldMapImage release];
     self.worldMapImage  = nil;
     
     self.magnifyingGlassView    = nil;
@@ -161,8 +135,26 @@
 
 
 
+#pragma mark - Image Methods
 - (IBAction)setNewImage:(UIImage *)anImage inImageView:(UIImageView *)anImageView
 {
+    //
+    //
+    // Check out the method visibleBounds:toView:
+    //
+    //
+    
+    
+    //
+    //
+    // Don't forget to apply contentScale: 
+    // 
+    // and [[UIScreen mainScreen] scale] * scaleOfZoom
+    //
+    //
+    //
+    
+    
     NSLog(@"\n\n\n\n-setNewImage");
 
     CGSize imageSize = CGSizeMake(anImage.size.width, anImage.size.height);
@@ -212,141 +204,151 @@
     self.worldMapImageView.image = self.worldMapImage;
     
     UIGraphicsEndImageContext();
-    
-    
-    NSLog(@"self.worldMapImageView.size = %f, %f", self.worldMapImageView.frame.size.width, self.worldMapImageView.frame.size.height);
-    NSLog(@"imageSize = (%f, %f)", imageSize.width, imageSize.height);
-    NSLog(@"xScale, yScale = (%f, %f)", self.xScale, self.yScale);
-    NSLog(@"anImage size = %f, %f", anImage.size.width, anImage.size.height);
-    NSLog(@"newImageRect = %f, %f, %f, %f", newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width, newImageRect.size.height);
-    NSLog(@"self.worldMapImage Size = %f, %f", self.worldMapImage.size.width, self.worldMapImage.size.height);
-    NSLog(@"self.worldImageView Image Size = %f, %f", self.worldMapImageView.image.size.width, self.worldMapImageView.image.size.height);
-    NSLog(@"self.worldImageView Rect = %f, %f, %f, %f", self.worldMapImageView.frame.origin.x, self.worldMapImageView.frame.origin.y, self.worldMapImageView.frame.size.width, self.worldMapImageView.frame.size.height);
-    NSLog(@"self.worldMapView Rect = %f, %f, %f, %f\n\n", self.worldMapView.frame.origin.x, self.worldMapView.frame.origin.y, self.worldMapView.frame.size.width, self.worldMapView.frame.size.height);
 }
 
 
 
-# pragma mark MagnifyingGlass Methods
+# pragma mark - MagnifyingGlass Methods
 - (IBAction)updateMagnifyingGlass
 {
-    NSLog(@"-updateReticle");
+    NSLog(@"-updateMagnifyingGlass");
+ 
     
-
     CGPoint newMagnifyingGlassOrigin;
     CGSize newMagnifyingGlassSize;
-    
-    if (self.magnifyingGlassZoom >= 1.0 && self.magnifyingGlassZoom <= 3.0) 
-    {
-        newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
-                                               self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
-        
-        newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
-                                           self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
-    }        
-
-    if (self.magnifyingGlassZoom < 1.0) 
-    {
-        self.magnifyingGlassZoom = 1.0;
-        
-        newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
-                                               self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
-        
-        newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
-                                           self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
-    }
-    
-    if (self.magnifyingGlassZoom > 3.0) 
-    {
-        self.magnifyingGlassZoom = 3.0;
-        
-        newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
-                                       self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
-        
-        newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
-                                    self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
-    }
-
-    CGFloat screenScale = [[UIScreen mainScreen] scale];
-    
-    newMagnifyingGlassOrigin.x *= screenScale;
-    newMagnifyingGlassOrigin.y *= screenScale;
-    newMagnifyingGlassSize.width *= screenScale;
-    newMagnifyingGlassSize.height *= screenScale;
 
     
+    //
+    // This chunk of code handles resizing of the magnifying glass.
+    //
+    {
+        NSLog(@"\n\n\n\n\n Resizing the magnifying glass");
+        NSLog(@"magnifying glass initial diameter = %f", self.magnifyingGlassDiameter);
+        //
+        // Change the magnifying glass diameter while checking to ensure it doesn't exceed min or max dimensions
+        //
+        if (self.magnifyingGlassDiameter >= self.minMagnifyingGlassDiameter && self.magnifyingGlassDiameter <= self.maxMagnifyingGlassDiameter) 
+        {
+            NSLog(@"magnifying glass not too big nor too small");
+            newMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ), 
+                                                      self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
+            
+            newMagnifyingGlassSize      = CGSizeMake(self.magnifyingGlassDiameter, 
+                                                     self.magnifyingGlassDiameter);
+        }   
+        
+        if (self.magnifyingGlassDiameter < self.minMagnifyingGlassDiameter) 
+        {
+            NSLog(@"magnifying glass too small");
+            self.magnifyingGlassDiameter = self.minMagnifyingGlassDiameter;
+            
+            newMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ), 
+                                                      self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
+            
+            newMagnifyingGlassSize      = CGSizeMake(self.magnifyingGlassDiameter, 
+                                                     self.magnifyingGlassDiameter);
+        }
+        
+        if (self.magnifyingGlassDiameter > self.maxMagnifyingGlassDiameter) 
+        {
+            NSLog(@"magnifying glass too big");
+            self.magnifyingGlassDiameter = self.maxMagnifyingGlassDiameter;
+            
+            newMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ),
+                                                      self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
+            
+            newMagnifyingGlassSize      = CGSizeMake(self.magnifyingGlassDiameter, 
+                                                     self.magnifyingGlassDiameter);
+        }
+        NSLog(@"magnifying glass diameter = %f", self.magnifyingGlassDiameter);
+        
+        
+        
+        NSLog(@"magnifyingGlassDiameter = %f\n\n\n\n\n", self.magnifyingGlassDiameter);
+        
+        self.magnifyingGlassView.frame = CGRectMake(newMagnifyingGlassOrigin.x, 
+                                                    newMagnifyingGlassOrigin.y, 
+                                                    newMagnifyingGlassSize.width, 
+                                                    newMagnifyingGlassSize.height);
+    }    
     
-    CGRect magnifiedImageFrame = CGRectMake( newMagnifyingGlassOrigin.x, newMagnifyingGlassOrigin.y, newMagnifyingGlassSize.width, newMagnifyingGlassSize.height );
     
     
     //
-    // It bears reminding that CGImageCreateWithImageInRect(CGImageRef, CGRect) creates a subimage from the larger CGImageRef in the 
-    // CGRect. This method is specifically NOT for scaling an image; use drawInRect:(CGRect) for (one way at least) scaling.
+    // This chunk of code handles zooming of the magnifying glass
     //
-    CGImageRef magnifyingGlassImageRef = CGImageCreateWithImageInRect( self.worldMapImage.CGImage, magnifiedImageFrame );
+    {
+        if (self.magnifyingGlassZoom >= 1.0 && self.magnifyingGlassZoom <= 3.0) 
+        {
+            newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
+                                                   self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
+            
+            newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
+                                                self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
+        }        
+        
+        if (self.magnifyingGlassZoom < 1.0) 
+        {
+            self.magnifyingGlassZoom = 1.0;
+            
+            newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
+                                                   self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
+            
+            newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
+                                                self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
+        }
+        
+        if (self.magnifyingGlassZoom > 3.0) 
+        {
+            self.magnifyingGlassZoom = 3.0;
+            
+            newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
+                                                   self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
+            
+            newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
+                                                self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
+        }
+        
+        CGFloat screenScale = [[UIScreen mainScreen] scale];
     
-    
-    self.magnifyingGlassView.layer.contents = (id)magnifyingGlassImageRef;
-    self.magnifyingGlassView.layer.borderWidth = 5.0;
-    self.magnifyingGlassView.layer.borderColor = [[UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0] CGColor];
-    self.magnifyingGlassView.layer.cornerRadius = self.magnifyingGlassView.frame.size.width / 2.0;
-     
-
-    NSLog(@"magnifying origin = (%f, %f)", magnifiedImageFrame.origin.x, magnifiedImageFrame.origin.y);
-    NSLog(@"magnifying size = (%f, %f)", magnifiedImageFrame.size.width, magnifiedImageFrame.size.height);
-    NSLog(@"reticle position = %f, %f", self.magnifyingGlassView.layer.position.x, self.magnifyingGlassView.layer.position.y);
-    NSLog(@"reticle frame origin = (%f, %f)", self.magnifyingGlassView.frame.origin.x, self.magnifyingGlassView.frame.origin.y);
-    NSLog(@"reticle center = (%f, %f)\n\n\n", self.magnifyingGlassView.center.x, self.magnifyingGlassView.center.y);
-    
-    CGImageRelease(magnifyingGlassImageRef);
+        
+        newMagnifyingGlassOrigin.x *= screenScale;
+        newMagnifyingGlassOrigin.y *= screenScale;
+        newMagnifyingGlassSize.width *= screenScale;
+        newMagnifyingGlassSize.height *= screenScale;
+        
+        
+        CGRect magnifiedImageFrame = CGRectMake( newMagnifyingGlassOrigin.x, newMagnifyingGlassOrigin.y, newMagnifyingGlassSize.width, newMagnifyingGlassSize.height );
+        
+        
+        //
+        // It bears reminding that CGImageCreateWithImageInRect(CGImageRef, CGRect) creates a subimage from the larger CGImageRef in the 
+        // CGRect. This method is specifically NOT for scaling an image; use drawInRect:(CGRect) for (one way at least) scaling.
+        //
+        CGImageRef magnifyingGlassImageRef = CGImageCreateWithImageInRect( self.worldMapImage.CGImage, magnifiedImageFrame );
+        
+        self.magnifyingGlassView.layer.contents = objc_unretainedObject(magnifyingGlassImageRef);
+        self.magnifyingGlassView.layer.borderWidth = 4.0;
+        self.magnifyingGlassView.layer.cornerRadius = self.magnifyingGlassView.frame.size.width / 2.0;
+        
+        CGImageRelease(magnifyingGlassImageRef);
+    }
 }
 
 
 
-- (void)resizeMagnifyingGlass
+- (void)updateMagnifyingGlassForZoom
 {
-    NSLog(@"\n\nResizing magnifying glass");
-    
-    CGPoint newMagnifyingGlassViewOrigin;
-    CGSize newMagnifyingGlassViewSize;
-    
-    
-    if (self.magnifyingGlassView.frame.size.width >= self.minMagnifyingGlassDiameter && self.magnifyingGlassView.frame.size.width <= self.maxMagnifyingGlassDiameter) 
-    {
-        newMagnifyingGlassViewOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ), 
-                                                   self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
-        
-        newMagnifyingGlassViewSize = CGSizeMake(self.magnifyingGlassDiameter, 
-                                                self.magnifyingGlassDiameter);
-        
-        self.magnifyingGlassView.frame = CGRectMake(newMagnifyingGlassViewOrigin.x, newMagnifyingGlassViewOrigin.y, newMagnifyingGlassViewSize.width, newMagnifyingGlassViewSize.height);
-    }   
-    
-    if (self.magnifyingGlassView.frame.size.width < self.minMagnifyingGlassDiameter) 
-    {
-        self.maxMagnifyingGlassDiameter = self.minMagnifyingGlassDiameter;
-        
-        CGSize minMagnifyingGlassSize       = CGSizeMake(self.minMagnifyingGlassDiameter, self.minMagnifyingGlassDiameter);
-        CGPoint minMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - self.minMagnifyingGlassDiameter / 2.0, 
-                                                  self.magnifyingGlassView.center.y - self.minMagnifyingGlassDiameter / 2.0);
-        self.magnifyingGlassView.frame      = CGRectMake(minMagnifyingGlassOrigin.x, minMagnifyingGlassOrigin.y, minMagnifyingGlassSize.width, minMagnifyingGlassSize.height);
-    }
-    
-    if (self.magnifyingGlassView.frame.size.width > self.maxMagnifyingGlassDiameter) 
-    {
-        self.magnifyingGlassDiameter = self.maxMagnifyingGlassDiameter;
-        
-        CGSize maxMagnifyingGlassSize       = CGSizeMake(self.maxMagnifyingGlassDiameter, self.maxMagnifyingGlassDiameter);
-        CGPoint maxMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - self.maxMagnifyingGlassDiameter / 2.0,
-                                                  self.magnifyingGlassView.center.y - self.maxMagnifyingGlassDiameter / 2.0);
-        self.magnifyingGlassView.frame      = CGRectMake(maxMagnifyingGlassOrigin.x, maxMagnifyingGlassOrigin.y, maxMagnifyingGlassSize.width, maxMagnifyingGlassSize.height);
-    }
-    
-    NSLog(@"magnifyingGlassDiameter = %f", self.magnifyingGlassDiameter);
-    
+    [self updateMagnifyingGlassLabelForZoom];
     [self updateMagnifyingGlass];
+}
 
+
+
+- (void)updateMagnifyingGlassForDiameter
+{
     [self updateMagnifyingGlassLabelForDiameter];
+    [self updateMagnifyingGlass];
 }
 
 
@@ -368,8 +370,8 @@
     //
     // Update the magnifying glass label to reflect the new magnification zoom
     //
-    NSString *diameterString = [NSString stringWithFormat:@"%2.1f", self.magnifyingGlassDiameter];
-    diameterString = [diameterString stringByAppendingString:@" points"];
+    NSString *diameterString = [NSString stringWithFormat:@"%2.0f", self.magnifyingGlassDiameter];
+    diameterString = [diameterString stringByAppendingString:@" pts"];
     self.magnifyingGlassLabel.text = diameterString;    
 }
 
@@ -518,33 +520,37 @@
     //
     UIGestureRecognizer *gestureRecognizer;
 	
+    // Tap Gesture (for recentering magnifying glass)
 	gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTapFromGestureRecognizer:)];
 	[self.worldMapView addGestureRecognizer:gestureRecognizer];
 	self.tapRecognizer                      = (UITapGestureRecognizer *)gestureRecognizer;
 	self.tapRecognizer.numberOfTapsRequired = 2;
 	self.tapRecognizer.delegate             = self;
-	[gestureRecognizer release];
 	
-	// Pan Gesture (for rotation and tilt)
+	// Pan Gesture (for translating magnifying glass)
 	gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanFromGestureRecognizer:)];
 	self.panRecognizer                      = (UIPanGestureRecognizer *)gestureRecognizer;
 	[self.magnifyingGlassView addGestureRecognizer:panRecognizer];
 	panRecognizer.delegate                  = self;
-	[gestureRecognizer release];
 	
-	// Pinch Gesture (for zoom)
+	// Pinch Gesture (for zoom of magnifying glass)
 	gestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleZoomFromGestureRecognizer:)];
 	self.pinchRecognizer                    = (UIPinchGestureRecognizer *)gestureRecognizer;
 	[self.view addGestureRecognizer:pinchRecognizer];
 	pinchRecognizer.delegate                = self;
-	[gestureRecognizer release];
 	
-	// Rotation Gesture (for increasing reticle size)
+	// Rotation Gesture (for resizing magnifying glass)
     gestureRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(handleResizeFromGestureRecognizer:)];
     self.rotationRecognizer                 = (UIRotationGestureRecognizer *)gestureRecognizer;
     [self.view addGestureRecognizer:rotationRecognizer];
     rotationRecognizer.delegate             = self;
-    [gestureRecognizer release];
+	
+	// Pan Gesture ( for resizing magnifying glass)
+	gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanResizeFromGestureRecognizer:)];
+	self.panResizeRecognizer                = (UIPanGestureRecognizer *)gestureRecognizer;
+	[self.view addGestureRecognizer:panResizeRecognizer];
+    self.panResizeRecognizer.minimumNumberOfTouches = 2;
+	panResizeRecognizer.delegate            = self;
 }
 
 
@@ -553,7 +559,7 @@
 {
     [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.05, 1.05);
-        self.magnifyingGlassView.layer.position = CGPointMake(160, 100.0);
+        self.magnifyingGlassView.layer.position = CGPointMake(160, 230.0);
 
 
     }completion:^( BOOL finished )
@@ -588,21 +594,15 @@
 	//  Y
 	
 
-    CGFloat tempZoom = self.magnifyingGlassZoom;
-    
     if ([gestureRecognizer state] == UIGestureRecognizerStateBegan)
     {
-        [UIView animateWithDuration:0.2 animations:^{
-            self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.25, 1.25);
-
-            [self updateMagnifyingGlass];
+        [UIView animateWithDuration:0.0 animations:^{
+            [self.magnifyingGlassView.layer setBorderColor:[[UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:0.5] CGColor]];
         }];
     }
     
     if ([gestureRecognizer state] == UIGestureRecognizerStateChanged) 
     {
-        self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.25, 1.25);
-        
         CGPoint translation = [gestureRecognizer translationInView:self.view];
         
         [self.magnifyingGlassView setCenter:CGPointMake(self.magnifyingGlassView.center.x + translation.x, self.magnifyingGlassView.center.y + translation.y)];
@@ -614,11 +614,8 @@
     
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
     {
-        [UIView animateWithDuration:0.2 animations:^{
-            self.magnifyingGlassZoom = tempZoom;
-            self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.0, 1.0);
-            [self updateMagnifyingGlass];
-        }];
+        [self.magnifyingGlassView.layer setBorderColor:[[UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0] CGColor]];
+        [self updateMagnifyingGlass];
     }
 }
 
@@ -629,7 +626,7 @@
     //
     // This sets the spacing between layers.
     //
-    if ([gestureRecognizer state] == UIGestureRecognizerStateBegan)
+    if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStatePossible)
     {
         [UIView animateWithDuration:0.5 animations:^{
             self.magnifyingGlassLabel.alpha = 1.0;
@@ -642,7 +639,7 @@
         
         self.magnifyingGlassZoom = gestureRecognizer.scale * 1.75;
         
-        [self updateMagnifyingGlass];
+        [self updateMagnifyingGlassForZoom];
     }
     
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
@@ -677,7 +674,7 @@
         // This resizes the diameter of the magnifying glass
         //
         self.magnifyingGlassDiameter += ( reticleScaleIncrement / 10.0 );
-        [self resizeMagnifyingGlass];
+        [self updateMagnifyingGlassForDiameter];
          
         
         NSLog(@"reticleScaleIncrement = %f", reticleScaleIncrement);
@@ -696,7 +693,45 @@
 
 
 
-# pragma mark Alerts
+- (void)handlePanResizeFromGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer
+{
+    if ([gestureRecognizer state] == UIGestureRecognizerStateBegan)
+    {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.magnifyingGlassLabel.alpha = 1.0;
+        }];
+    }
+    
+    if ([gestureRecognizer state] == UIGestureRecognizerStateChanged) 
+    {
+        //
+        // Swipe up or down to change the size of the magnifying glass.
+        //
+        CGFloat magnifyingGlassResizeIncrement   = [gestureRecognizer translationInView:self.worldMapView].y;
+        
+        
+        //
+        // This resizes the diameter of the magnifying glass
+        //
+        self.magnifyingGlassDiameter -= magnifyingGlassResizeIncrement / 10.0;
+        [self updateMagnifyingGlassForDiameter];
+        
+        
+        NSLog(@"magnifyingGlassResizeIncrement = %f", magnifyingGlassResizeIncrement);
+        NSLog(@"resulting magnifyingGlassDiameter = %f\n\n", self.magnifyingGlassDiameter);
+        
+    }
+    if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
+    {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.magnifyingGlassLabel.alpha = 0.0;
+        }];
+    }    
+}
+
+
+
+# pragma mark - Alerts
 
 - (void) userJustDoubleTapped:(NSError *)error
 {
@@ -706,7 +741,6 @@
                                               cancelButtonTitle:@"Okay"
                                               otherButtonTitles:nil];
     [alertView show];
-    [alertView release];
 }
 
 
@@ -714,7 +748,7 @@
 
 
 
-# pragma mark UtilityViewController Delegate Methods
+# pragma mark - UtilityViewController Delegate Methods
 
 - (void)infoViewControllerDidFinish:(InfoViewController *)controller
 {
@@ -731,17 +765,57 @@
     controller.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self presentModalViewController:controller animated:YES];
     
-    [controller release];
 }
 
 
+
+#pragma mark - View controller rotation methods
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations.
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    
+    return (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight);
 }
 
+
+
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    NSLog(@"Going to handle device orientation change");
+    
+    UIInterfaceOrientation orientation;
+    
+    if (UIInterfaceOrientationIsPortrait(orientation)) 
+    {
+        NSLog(@"\n\n\n\nPortrait\n\n\n\n");
+    }
+    
+    if (UIInterfaceOrientationIsLandscape(orientation)) 
+    {
+        NSLog(@"\n\n\n\nLandscape\n\n\n\n");
+    }
+}
+
+
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"Going to handle device orientation change");
+    
+    UIInterfaceOrientation orientation;
+    
+    if (UIInterfaceOrientationIsPortrait(orientation)) 
+    {
+        NSLog(@"\n\n\n\nPortrait\n\n\n\n");
+    }
+    
+    if (UIInterfaceOrientationIsLandscape(orientation)) 
+    {
+        NSLog(@"\n\n\n\nLandscape\n\n\n\n");
+    } 
+}
 
 
 - (void)didReceiveMemoryWarning

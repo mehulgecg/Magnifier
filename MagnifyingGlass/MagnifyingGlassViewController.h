@@ -19,7 +19,7 @@
     CGSize          _worldImageSize;
     
     UIView          *_magnifyingGlassView;
-    UILabel *magnifyingGlassLabel;
+    UILabel         *magnifyingGlassLabel;
 }
 
 @property (nonatomic, retain)           NSManagedObjectContext      *managedObjectContext;
@@ -38,12 +38,13 @@
 @property                               CGFloat         minMagnifyingGlassDiameter;
 @property                               CGFloat         magnifyingGlassZoom;
 @property                               CGFloat         magnifyingGlassScale;
-@property (nonatomic, retain) IBOutlet UILabel *magnifyingGlassLabel;
+@property (nonatomic, retain) IBOutlet  UILabel         *magnifyingGlassLabel;
 
 @property (nonatomic, retain)           UITapGestureRecognizer      *tapRecognizer;
 @property (nonatomic, retain)           UIPanGestureRecognizer      *panRecognizer;
 @property (nonatomic, retain)           UIPinchGestureRecognizer    *pinchRecognizer;
 @property (nonatomic, retain)           UIRotationGestureRecognizer *rotationRecognizer;
+@property (nonatomic, retain)           UIPanGestureRecognizer      *panResizeRecognizer;
 
 
 // MagnifyingGlass Public Methods

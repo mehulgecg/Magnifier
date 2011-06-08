@@ -46,7 +46,7 @@
 		E6BD64D2138B87FB00E8BFB2 /* KrazyKimWarMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = KrazyKimWarMap.png; sourceTree = "<group>"; };
 		E6BD64D3138B87FB00E8BFB2 /* MagnifyAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifyAppDelegate.h; sourceTree = "<group>"; };
 		E6BD64D4138B87FB00E8BFB2 /* MagnifyAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifyAppDelegate.m; sourceTree = "<group>"; };
-		E6BD64D5138B87FB00E8BFB2 /* MagnifyingGlassViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = MagnifyingGlassViewController.h; sourceTree = "<group>"; };
+		E6BD64D5138B87FB00E8BFB2 /* MagnifyingGlassViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifyingGlassViewController.h; sourceTree = "<group>"; };
 		E6BD64D6138B87FB00E8BFB2 /* MagnifyingGlassViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifyingGlassViewController.m; sourceTree = "<group>"; };
 		E6BD64D7138B87FB00E8BFB2 /* Mercury-First_Color_Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Mercury-First_Color_Image.png"; sourceTree = "<group>"; };
 		E6BD64D8138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = NASA_Leaders_Tesla_Testdrive_1024.jpg; sourceTree = "<group>"; };
@@ -154,9 +154,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E6BD6499138B87A700E8BFB2 /* MagnifyingGlass */ = {
+		E6BD6499138B87A700E8BFB2 /* Magnifier */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E6BD64C4138B87A700E8BFB2 /* Build configuration list for PBXNativeTarget "MagnifyingGlass" */;
+			buildConfigurationList = E6BD64C4138B87A700E8BFB2 /* Build configuration list for PBXNativeTarget "Magnifier" */;
 			buildPhases = (
 				E6BD6496138B87A700E8BFB2 /* Sources */,
 				E6BD6497138B87A700E8BFB2 /* Frameworks */,
@@ -166,7 +166,7 @@
 			);
 			dependencies = (
 			);
-			name = MagnifyingGlass;
+			name = Magnifier;
 			productName = MagnifyingGlass;
 			productReference = E6BD649A138B87A700E8BFB2 /* MagnifyingGlass.app */;
 			productType = "com.apple.product-type.application";
@@ -177,6 +177,7 @@
 		E6BD6491138B87A700E8BFB2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = PortableFrontier;
 			};
 			buildConfigurationList = E6BD6494138B87A700E8BFB2 /* Build configuration list for PBXProject "MagnifyingGlass" */;
@@ -191,7 +192,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E6BD6499138B87A700E8BFB2 /* MagnifyingGlass */,
+				E6BD6499138B87A700E8BFB2 /* Magnifier */,
 			);
 		};
 /* End PBXProject section */
@@ -251,7 +252,8 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -265,7 +267,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -278,10 +281,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagnifyingGlass/MagnifyingGlass-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "MagnifyingGlass/MagnifyingGlass-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -292,9 +297,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MagnifyingGlass/MagnifyingGlass-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "MagnifyingGlass/MagnifyingGlass-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
@@ -314,7 +321,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E6BD64C4138B87A700E8BFB2 /* Build configuration list for PBXNativeTarget "MagnifyingGlass" */ = {
+		E6BD64C4138B87A700E8BFB2 /* Build configuration list for PBXNativeTarget "Magnifier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E6BD64C5138B87A700E8BFB2 /* Debug */,

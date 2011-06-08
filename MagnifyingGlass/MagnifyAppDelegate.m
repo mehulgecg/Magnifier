@@ -68,15 +68,6 @@
     [self saveContext];
 }
 
-- (void)dealloc
-{
-    [_window release];
-    [__managedObjectContext release];
-    [__managedObjectModel release];
-    [__persistentStoreCoordinator release];
-    [_magnifyingGlassViewController release];
-    [super dealloc];
-}
 
 - (void)awakeFromNib
 {

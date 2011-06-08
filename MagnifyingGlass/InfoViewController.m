@@ -13,10 +13,6 @@
 
 @synthesize delegate = _delegate;
 
-- (void)dealloc
-{
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {

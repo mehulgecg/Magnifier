@@ -20,10 +20,10 @@
 @interface MagnifyingGlassViewController () 
 
 // MagnifyingGlass Private Methods
-- (void)updateMagnifyingGlassForZoom;
-- (void)updateMagnifyingGlassForDiameter;
-- (void)updateMagnifyingGlassLabelForZoom;
-- (void)updateMagnifyingGlassLabelForDiameter;
+//- (void)updateMagnifyingGlassForZoom;
+//- (void)updateMagnifyingGlassForDiameter;
+//- (void)updateMagnifyingGlassLabelForZoom;
+//- (void)updateMagnifyingGlassLabelForDiameter;
 
 
 - (CGRect)rectFromImage:(UIImage *)anImage inView:(UIView *)aView;
@@ -43,6 +43,7 @@
 
 
 
+
 @implementation MagnifyingGlassViewController
 
 
@@ -58,12 +59,12 @@
 @synthesize yScale;
 
 @synthesize magnifyingGlassView         = _magnifyingGlassView;
-@synthesize magnifyingGlassDiameter;
-@synthesize maxMagnifyingGlassDiameter;
-@synthesize minMagnifyingGlassDiameter;
-@synthesize magnifyingGlassZoom;
-@synthesize magnifyingGlassScale;
 @synthesize magnifyingGlassLabel;
+//@synthesize magnifyingGlassDiameter;
+//@synthesize maxMagnifyingGlassDiameter;
+//@synthesize minMagnifyingGlassDiameter;
+//@synthesize magnifyingGlassZoom;
+//@synthesize magnifyingGlassScale;
 
 @synthesize tapRecognizer;
 @synthesize panRecognizer;
@@ -79,32 +80,44 @@
 {
     [super viewDidLoad];
     
-    self.worldMapImage = [UIImage imageNamed:@"KrazyKimWarMap.png"];
-    self.worldMapImageView.image = self.worldMapImage;
+//    self.worldMapImage = [UIImage imageNamed:@"KrazyKimWarMap.png"];
+//    self.worldMapImageView.image = self.worldMapImage;
     
     
     //
-    // Reticle ivars
+    // MagnifyingGlass Settings
     //
-    self.maxMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width * 0.7;
-    self.minMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width * 0.3;
-    self.magnifyingGlassDiameter    = self.minMagnifyingGlassDiameter;
+//    self.maxMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width * 0.7;
+//    self.minMagnifyingGlassDiameter = [[UIScreen mainScreen] bounds].size.width * 0.3;
+//    self.magnifyingGlassDiameter    = self.minMagnifyingGlassDiameter;
+//    
+//    self.magnifyingGlassView.layer.borderColor = [[UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0] CGColor];
+//    
+//    self.magnifyingGlassZoom    =   1.0;
+//    self.magnifyingGlassScale   =   1.0;
+//    self.magnifyingGlassLabel.alpha = 0.0;
     
-    self.magnifyingGlassView.layer.borderColor = [[UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0] CGColor];
     
-    self.magnifyingGlassZoom    =   1.0;
-    self.magnifyingGlassScale   =   1.0;
+    self.magnifyingGlassView = [[MagnifyingGlass alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+
+    self.magnifyingGlassLabel = self.magnifyingGlassView.magnifyingGlassLabel;
+//    self.magnifyingGlassZoom    =   1.0;
+//    self.magnifyingGlassScale   =   1.0;
     self.magnifyingGlassLabel.alpha = 0.0;
     
-   
     //
     // Create the Gesture Recognizers
     //
     [self createGestureRecognizers];
     
-    [self setNewImage:[UIImage imageWithCGImage:[UIImage imageNamed:@"NASA_Leaders_Tesla_Testdrive_1024.jpg"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp] inImageView:self.worldMapImageView];
     
-    [self updateMagnifyingGlass];
+    //
+    // Set the main background image
+    //
+    [self setNewImage:[UIImage imageWithCGImage:[UIImage imageNamed:@"Mercury-First_Color_Image.png"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp] inImageView:self.worldMapImageView];
+    
+    [self.magnifyingGlassView updateMagnifyingGlass];
 }
 
 
@@ -126,7 +139,7 @@
     
     self.magnifyingGlassView    = nil;
 
-    [self setMagnifyingGlassLabel:nil];
+    [self.magnifyingGlassView setMagnifyingGlassLabel:nil];
     [super viewDidUnload];
 
     // Release any retained subviews of the main view.
@@ -209,6 +222,7 @@
 
 
 # pragma mark - MagnifyingGlass Methods
+/*
 - (IBAction)updateMagnifyingGlass
 {
     NSLog(@"-updateMagnifyingGlass");
@@ -374,7 +388,7 @@
     diameterString = [diameterString stringByAppendingString:@" pts"];
     self.magnifyingGlassLabel.text = diameterString;    
 }
-
+*/
 
 
 #pragma mark -
@@ -565,7 +579,7 @@
     }completion:^( BOOL finished )
      { 
          self.magnifyingGlassView.transform = CGAffineTransformMakeScale(1.0, 1.0);
-        [self updateMagnifyingGlass];
+        [self.magnifyingGlassView updateMagnifyingGlass];
      }];
 }
 
@@ -609,13 +623,13 @@
         
         [gestureRecognizer setTranslation:CGPointZero inView:[self.magnifyingGlassView superview]];
         
-        [self updateMagnifyingGlass];
+        [self.magnifyingGlassView updateMagnifyingGlass];
     }
     
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
     {
         [self.magnifyingGlassView.layer setBorderColor:[[UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0] CGColor]];
-        [self updateMagnifyingGlass];
+        [self.magnifyingGlassView updateMagnifyingGlass];
     }
 }
 
@@ -637,9 +651,9 @@
     {
         NSLog(@"\n\n\nZoom Scale = %f", gestureRecognizer.scale);
         
-        self.magnifyingGlassZoom = gestureRecognizer.scale * 1.75;
+        self.magnifyingGlassView.magnifyingGlassZoom = gestureRecognizer.scale * 1.75;
         
-        [self updateMagnifyingGlassForZoom];
+        [self.magnifyingGlassView updateMagnifyingGlassForZoom];
     }
     
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
@@ -673,12 +687,12 @@
         //
         // This resizes the diameter of the magnifying glass
         //
-        self.magnifyingGlassDiameter += ( reticleScaleIncrement / 10.0 );
-        [self updateMagnifyingGlassForDiameter];
+        self.magnifyingGlassView.magnifyingGlassDiameter += ( reticleScaleIncrement / 10.0 );
+        [self.magnifyingGlassView updateMagnifyingGlassForDiameter];
          
         
         NSLog(@"reticleScaleIncrement = %f", reticleScaleIncrement);
-        NSLog(@"resulting reticleDiameter = %f\n\n", self.magnifyingGlassDiameter);
+        NSLog(@"resulting reticleDiameter = %f\n\n", self.magnifyingGlassView.magnifyingGlassDiameter);
         
     }
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
@@ -713,12 +727,12 @@
         //
         // This resizes the diameter of the magnifying glass
         //
-        self.magnifyingGlassDiameter -= magnifyingGlassResizeIncrement / 10.0;
-        [self updateMagnifyingGlassForDiameter];
+        self.magnifyingGlassView.magnifyingGlassDiameter -= magnifyingGlassResizeIncrement / 10.0;
+        [self.magnifyingGlassView updateMagnifyingGlassForDiameter];
         
         
         NSLog(@"magnifyingGlassResizeIncrement = %f", magnifyingGlassResizeIncrement);
-        NSLog(@"resulting magnifyingGlassDiameter = %f\n\n", self.magnifyingGlassDiameter);
+        NSLog(@"resulting magnifyingGlassDiameter = %f\n\n", self.magnifyingGlassView.magnifyingGlassDiameter);
         
     }
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 

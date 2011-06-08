@@ -8,6 +8,8 @@
 
 #import "InfoViewController.h"
 
+#import "MagnifyingGlass.h"
+
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
@@ -18,7 +20,7 @@
     UIImage         *_worldMapImage;
     CGSize          _worldImageSize;
     
-    UIView          *_magnifyingGlassView;
+    MagnifyingGlass *_magnifyingGlassView;
     UILabel         *magnifyingGlassLabel;
 }
 
@@ -32,13 +34,13 @@
 @property                               CGFloat         xScale;
 @property                               CGFloat         yScale;
 
-@property (nonatomic, retain) IBOutlet  UIView          *magnifyingGlassView;
-@property                               CGFloat         magnifyingGlassDiameter;
-@property                               CGFloat         maxMagnifyingGlassDiameter;
-@property                               CGFloat         minMagnifyingGlassDiameter;
-@property                               CGFloat         magnifyingGlassZoom;
-@property                               CGFloat         magnifyingGlassScale;
+@property (nonatomic, retain) IBOutlet  MagnifyingGlass *magnifyingGlassView;
 @property (nonatomic, retain) IBOutlet  UILabel         *magnifyingGlassLabel;
+//@property                               CGFloat         magnifyingGlassDiameter;
+//@property                               CGFloat         maxMagnifyingGlassDiameter;
+//@property                               CGFloat         minMagnifyingGlassDiameter;
+//@property                               CGFloat         magnifyingGlassZoom;
+//@property                               CGFloat         magnifyingGlassScale;
 
 @property (nonatomic, retain)           UITapGestureRecognizer      *tapRecognizer;
 @property (nonatomic, retain)           UIPanGestureRecognizer      *panRecognizer;
@@ -48,7 +50,7 @@
 
 
 // MagnifyingGlass Public Methods
-- (IBAction)updateMagnifyingGlass;
+//- (IBAction)updateMagnifyingGlass;
 
 // Method to add a new image...not sure if this'll be in Magnifying Glass or not.
 - (IBAction)setNewImage:(UIImage *)anImage inImageView:(UIView *)anImageView;

@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MagnifyingGlass : UIView
+@interface MagnifyingGlass : NSObject
 {
+    UIView          *magnifyingGlassView;
     UILabel         *magnifyingGlassLabel;
     UIImage         *magnifyingGlassImage;
 }
 
+@property (nonatomic, retain) IBOutlet  UIView          *magnifyingGlassView;
 @property (nonatomic, retain) IBOutlet  UILabel         *magnifyingGlassLabel;
 @property (nonatomic, retain) IBOutlet  UIImage         *magnifyingGlassImage;
 
@@ -25,11 +27,16 @@
 
 
 // MagnifyingGlass Public Methods
-- (IBAction)updateMagnifyingGlass;
+- (void)createMagnifyingGlassWithFrame:(CGRect)frame;
+
+- (void)updateMagnifyingGlass;
 - (void)updateMagnifyingGlassForZoom;
 - (void)updateMagnifyingGlassForDiameter;
 - (void)updateMagnifyingGlassLabelForZoom;
 - (void)updateMagnifyingGlassLabelForDiameter;
+
+- (void)dimMagnifyingGlass;
+- (void)undimMagnifyingGlass;
 
 
 @end

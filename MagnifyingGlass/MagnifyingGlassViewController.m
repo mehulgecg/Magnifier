@@ -750,10 +750,20 @@
     InfoViewController *controller = [[InfoViewController alloc] initWithNibName:@"InfoView" bundle:nil];
     controller.delegate = self;
     
-    controller.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     [self presentModalViewController:controller animated:YES];
     
 }
+
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"showAlternate"]) {
+        [[segue destinationViewController] setDelegate:self];
+    }
+}
+
 
 
 

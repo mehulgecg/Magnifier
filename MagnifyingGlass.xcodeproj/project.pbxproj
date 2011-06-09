@@ -21,7 +21,6 @@
 		E6BD64DE138B87FB00E8BFB2 /* MagnifyAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64D4138B87FB00E8BFB2 /* MagnifyAppDelegate.m */; };
 		E6BD64DF138B87FB00E8BFB2 /* MagnifyingGlassViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6BD64D6138B87FB00E8BFB2 /* MagnifyingGlassViewController.m */; };
 		E6BD64E0138B87FB00E8BFB2 /* Mercury-First_Color_Image.png in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64D7138B87FB00E8BFB2 /* Mercury-First_Color_Image.png */; };
-		E6BD64E1138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64D8138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg */; };
 		E6BD64E3138B883300E8BFB2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64E2138B883300E8BFB2 /* MainWindow.xib */; };
 		E6BD64E5138B885E00E8BFB2 /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64E4138B885E00E8BFB2 /* MainView.xib */; };
 		E6BD64E7138B887900E8BFB2 /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64E6138B887900E8BFB2 /* InfoView.xib */; };
@@ -30,7 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E6BD649A138B87A700E8BFB2 /* MagnifyingGlass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnifyingGlass.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6BD649A138B87A700E8BFB2 /* Magnifier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magnifier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6BD649E138B87A700E8BFB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E6BD64A0138B87A700E8BFB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E6BD64A2138B87A700E8BFB2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -50,7 +49,6 @@
 		E6BD64D5138B87FB00E8BFB2 /* MagnifyingGlassViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifyingGlassViewController.h; sourceTree = "<group>"; };
 		E6BD64D6138B87FB00E8BFB2 /* MagnifyingGlassViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifyingGlassViewController.m; sourceTree = "<group>"; };
 		E6BD64D7138B87FB00E8BFB2 /* Mercury-First_Color_Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Mercury-First_Color_Image.png"; sourceTree = "<group>"; };
-		E6BD64D8138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = NASA_Leaders_Tesla_Testdrive_1024.jpg; sourceTree = "<group>"; };
 		E6BD64E2138B883300E8BFB2 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		E6BD64E4138B885E00E8BFB2 /* MainView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
 		E6BD64E6138B887900E8BFB2 /* InfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
@@ -87,7 +85,7 @@
 		E6BD649B138B87A700E8BFB2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E6BD649A138B87A700E8BFB2 /* MagnifyingGlass.app */,
+				E6BD649A138B87A700E8BFB2 /* Magnifier.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -151,7 +149,6 @@
 				E6BD64D1138B87FB00E8BFB2 /* KrazyKimWarMap.jpg */,
 				E6BD64D2138B87FB00E8BFB2 /* KrazyKimWarMap.png */,
 				E6BD64D7138B87FB00E8BFB2 /* Mercury-First_Color_Image.png */,
-				E6BD64D8138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg */,
 			);
 			name = Graphics;
 			sourceTree = "<group>";
@@ -173,7 +170,7 @@
 			);
 			name = Magnifier;
 			productName = MagnifyingGlass;
-			productReference = E6BD649A138B87A700E8BFB2 /* MagnifyingGlass.app */;
+			productReference = E6BD649A138B87A700E8BFB2 /* Magnifier.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -212,7 +209,6 @@
 				E6BD64DC138B87FB00E8BFB2 /* KrazyKimWarMap.jpg in Resources */,
 				E6BD64DD138B87FB00E8BFB2 /* KrazyKimWarMap.png in Resources */,
 				E6BD64E0138B87FB00E8BFB2 /* Mercury-First_Color_Image.png in Resources */,
-				E6BD64E1138B87FB00E8BFB2 /* NASA_Leaders_Tesla_Testdrive_1024.jpg in Resources */,
 				E6BD64E3138B883300E8BFB2 /* MainWindow.xib in Resources */,
 				E6BD64E5138B885E00E8BFB2 /* MainView.xib in Resources */,
 				E6BD64E7138B887900E8BFB2 /* InfoView.xib in Resources */,

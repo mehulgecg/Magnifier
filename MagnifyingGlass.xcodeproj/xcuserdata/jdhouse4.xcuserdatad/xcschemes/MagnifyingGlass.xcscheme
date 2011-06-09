@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E6BD6499138B87A700E8BFB2"
-               BuildableName = "MagnifyingGlass.app"
+               BuildableName = "Magnifier.app"
                BlueprintName = "Magnifier"
                ReferencedContainer = "container:MagnifyingGlass.xcodeproj">
             </BuildableReference>
@@ -42,7 +42,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E6BD6499138B87A700E8BFB2"
-            BuildableName = "MagnifyingGlass.app"
+            BuildableName = "Magnifier.app"
             BlueprintName = "Magnifier"
             ReferencedContainer = "container:MagnifyingGlass.xcodeproj">
          </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E6BD6499138B87A700E8BFB2"
-            BuildableName = "MagnifyingGlass.app"
+            BuildableName = "Magnifier.app"
             BlueprintName = "Magnifier"
             ReferencedContainer = "container:MagnifyingGlass.xcodeproj">
          </BuildableReference>

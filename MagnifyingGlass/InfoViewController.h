@@ -8,20 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol InfoViewControllerDelegate;
-
-@interface InfoViewController : UIViewController 
-{
-
-}
-
-@property (nonatomic, assign) id <InfoViewControllerDelegate> delegate;
-
-- (IBAction)done:(id)sender;
-
-@end
+@class InfoViewController;
 
 
 @protocol InfoViewControllerDelegate
 - (void)infoViewControllerDidFinish:(InfoViewController *)controller;
+@end
+
+@interface InfoViewController : UIViewController 
+
+@property (assign, nonatomic) IBOutlet id <InfoViewControllerDelegate> delegate;
+
+- (IBAction)done:(id)sender;
+
 @end

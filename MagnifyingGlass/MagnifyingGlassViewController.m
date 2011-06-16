@@ -227,7 +227,7 @@ static BOOL     hasRunOnce              = NO;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    CGContextDrawImage(context, newImageRect, anImage.CGImage);
+    //CGContextDrawImage(context, newImageRect, anImage.CGImage);
 
     /*
     CGContextSaveGState(context);
@@ -251,15 +251,16 @@ static BOOL     hasRunOnce              = NO;
     CGRect newImageRect2 = CGRectMake(newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
     
 //    CGContextDrawImage(context, newImageRect2, anImage.CGImage);
-    
+    */
     //
     // This is where the image is drawn to the origin of the image rect.
     //
     UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-    //[anImage drawInRect:newImageRect];
+    [anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
     
+    /*
     CGContextRestoreGState(context);
     */
     

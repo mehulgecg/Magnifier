@@ -9,6 +9,7 @@
 #import "MagnifyingGlassViewController.h"
 
 #import "MagnifyingGlass.h"
+#import "UIImage+ScaleRotate.h"
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -16,6 +17,16 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <ImageIO/ImageIO.h>
+
+
+
+
+
+//CGFloat         DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+//CGFloat         RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
+static CGFloat  kMaxHeight				= 420.0; // Defines maximum image height
+static CGFloat  kMaxWidth				= 280.0; // Defines maximum image width
+static BOOL     hasRunOnce              = NO;
 
 
 
@@ -63,12 +74,16 @@
 @synthesize rotationRecognizer;
 @synthesize panResizeRecognizer;
 
+@synthesize imagePicker;
+
 
 
 #pragma mark - View Lifecycle Methods
 
 - (void)viewDidLoad
 {
+    NSLog(@"\n\n-viewDidLoad\n\n");
+    
     [super viewDidLoad];
     
     //
@@ -78,11 +93,30 @@
     
     
     //
-    // Set the main background image
+    // Set the main background image conditioned on this being a first run.
     //
-    self.worldMapImageView.image = [UIImage imageNamed:@"Mercury-First_Color_Image"];
-    [self setNewImage:[UIImage imageWithCGImage:[UIImage imageNamed:@"Mercury-First_Color_Image.png"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp] inImageView:self.worldMapImageView];
-        
+    if (!hasRunOnce) 
+    {
+        self.worldMapImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"iPhone4"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
+    }
+    
+    hasRunOnce = YES;
+}
+
+
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    NSLog(@"\n\n-viewDidAppear\n\n");
+    [super viewDidAppear:animated];
+    
+    [self setNewImage:self.worldMapImage inImageView:self.worldMapImageView];
+ 
+    //NSLog(@"image orientation = %u", self.worldMapImage.imageOrientation);
+    
+    //
+    //Create the magnifying glass object and set its values
+    //
     self.magnifier = [[MagnifyingGlass alloc] init];
     
     [self.magnifier createMagnifyingGlassWithFrame:[[UIScreen mainScreen] bounds]];
@@ -98,25 +132,14 @@
 
 
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-
-
 - (void)viewDidUnload
 {
-    self.worldMapView   = nil;
+    NSLog(@"\n\n-viewDidUnload\n\n");
     
-    self.worldMapImageView  = nil;
-    
-    self.worldMapImage  = nil;
-    
-    self.magnifierView    = nil;
-    
-    [self.magnifier setMagnifyingGlassLabel:nil];
     [super viewDidUnload];
+    
+    //self.worldMapImageView = nil;
+    //self.worldMapImageView.image = nil;
 }
 
 
@@ -143,219 +166,114 @@
     
     NSLog(@"\n\n\n\n-setNewImage");
     
+    
+    //
+    // Let's see how big the image is...this will likely go away in the final release.
+    //
     CGSize imageSize = CGSizeMake(anImage.size.width, anImage.size.height);
-    
-    self.xScale = anImageView.frame.size.width / imageSize.width;
-    self.yScale = anImageView.frame.size.height / imageSize.height;
+    NSLog(@"image size = (%f, %f)", imageSize.width, imageSize.height);
     
     
     //
-    // Recalculate the image size based on the scale of the image / image view
+    // Scale the rect to fit the image within the the bounds of the screen
     //
-    CGSize newImageSize = CGSizeMake(imageSize.width * self.xScale, imageSize.height * self.yScale);
-    
-    
-    CGRect newImageRect = [self rectFromImage:anImage inView:self.worldMapImageView];
-    
-    NSLog(@"newImageRect size = (%f, %f)", newImageRect.size.width, newImageRect.size.height);
-    
+    CGRect newImageRect = [self rectFromImage:anImage inView:self.worldMapView];
+    NSLog(@"newImageRect = (%f, %f, %f, %f)", newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width, newImageRect.size.height);
+   
     
     //
-    // Start by capturing the whole image
+    // Resize container view to the diminsions of the resized rect.
     //
-    UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+    self.worldMapView.center = self.view.center;
+    self.worldMapView.frame = CGRectMake(newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width, newImageRect.size.height);
+    NSLog(@"worldMapView frame = %f, %f, %f, %f", self.worldMapView.frame.origin.x, self.worldMapView.frame.origin.y, self.worldMapView.frame.size.width, self.worldMapView.frame.size.height);
+    
+    
+    //
+    // Resize the image view containing the image to the dimensions of the resized rect.
+    //
+    self.worldMapImageView.center = self.worldMapView.center;
+    self.worldMapImageView.frame = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
+    NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.worldMapImageView.frame.origin.x, self.worldMapImageView.frame.origin.y, self.worldMapImageView.frame.size.width, self.worldMapImageView.frame.size.height);
+    NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
+    
+    
+    self.worldMapImageView.layer.minificationFilter = kCAFilterTrilinear;
+	self.worldMapImageView.layer.minificationFilterBias = 0;
+
+    
+    anImage = [anImage scaleToRect:newImageRect];
+    NSLog(@"anImage scaled size = %f, %f", anImage.size.width, anImage.size.height);
+    
+    
+    self.worldMapImageView.image = anImage;
+    //self.worldMapImageView.image = [UIImage imageWithCGImage:self.worldMapImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
+    
+
+    // 
+    // Now set-up the image for the magnifying glass.
+    //
+    //
+    // Start by capturing the whole screen. We have to do this because UIGraphicsBeginImageContextWithOptions, like its predessor 
+    // UIGraphicsBeginImageContext, uses UIKit's coorodinate system, the origin for which is the upper left-hand corner of the 
+    // screen.
+    //
+    //CGSize newImageSize = CGSizeMake(150.0, 200.0);
+    //CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
+    //CGSize newImageSize = CGSizeMake(newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
+    //CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
+    //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+    UIGraphicsBeginImageContextWithOptions([[UIScreen mainScreen] bounds].size, NO, 0);
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
+    CGContextDrawImage(context, newImageRect, anImage.CGImage);
+
+    /*
+    CGContextSaveGState(context);
+    
+    // Center the context around the window's anchor point
+    CGContextTranslateCTM(context, [self.worldMapView center].x, [self.worldMapView center].y);
+    //CGContextTranslateCTM(context, newImageRect.origin.x, newImageRect.origin.y);
+    //CGContextTranslateCTM(context, newImageRect.origin.x / 2.0, newImageRect.origin.y / 2.0);
+    
+    // Apply the window's transform about the anchor point
+    CGContextConcatCTM(context, [self.worldMapView transform]);
+    
+    
+    // Offset by the portion of the bounds left of and above the anchor point
+    
+    CGContextTranslateCTM(context,
+                          -[self.worldMapView bounds].size.width * [[self.worldMapView layer] anchorPoint].x,
+                          -[self.worldMapView bounds].size.height * [[self.worldMapView layer] anchorPoint].y);
+    
+    
+    CGRect newImageRect2 = CGRectMake(newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
+    
+//    CGContextDrawImage(context, newImageRect2, anImage.CGImage);
     
     //
-    // This is where the image is rescaled to a scaled rect.
+    // This is where the image is drawn to the origin of the image rect.
     //
     UIGraphicsPushContext(context);
-    [anImage drawInRect:newImageRect];
+    //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
+    //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
     
+    CGContextRestoreGState(context);
+    */
     
     //
     // Retrieve the screenshot image containing both the camera content and the overlay view
     //
-    //    self.worldMapImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     self.worldMapImage = UIGraphicsGetImageFromCurrentImageContext();
-    self.worldMapImageView.image = self.worldMapImage;
+    NSLog(@"final image size = %f, %f", self.worldMapImage.size.width, self.worldMapImage.size.height);
     
     UIGraphicsEndImageContext();
+    
+    NSLog(@"\n\n");
 }
 
-
-
-# pragma mark - MagnifyingGlass Methods
-/*
- - (IBAction)updateMagnifyingGlass
- {
- NSLog(@"-updateMagnifyingGlass");
- 
- 
- CGPoint newMagnifyingGlassOrigin;
- CGSize newMagnifyingGlassSize;
- 
- 
- //
- // This chunk of code handles resizing of the magnifying glass.
- //
- {
- NSLog(@"\n\n\n\n\n Resizing the magnifying glass");
- NSLog(@"magnifying glass initial diameter = %f", self.magnifyingGlassDiameter);
- //
- // Change the magnifying glass diameter while checking to ensure it doesn't exceed min or max dimensions
- //
- if (self.magnifyingGlassDiameter >= self.minMagnifyingGlassDiameter && self.magnifyingGlassDiameter <= self.maxMagnifyingGlassDiameter) 
- {
- NSLog(@"magnifying glass not too big nor too small");
- newMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ), 
- self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
- 
- newMagnifyingGlassSize      = CGSizeMake(self.magnifyingGlassDiameter, 
- self.magnifyingGlassDiameter);
- }   
- 
- if (self.magnifyingGlassDiameter < self.minMagnifyingGlassDiameter) 
- {
- NSLog(@"magnifying glass too small");
- self.magnifyingGlassDiameter = self.minMagnifyingGlassDiameter;
- 
- newMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ), 
- self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
- 
- newMagnifyingGlassSize      = CGSizeMake(self.magnifyingGlassDiameter, 
- self.magnifyingGlassDiameter);
- }
- 
- if (self.magnifyingGlassDiameter > self.maxMagnifyingGlassDiameter) 
- {
- NSLog(@"magnifying glass too big");
- self.magnifyingGlassDiameter = self.maxMagnifyingGlassDiameter;
- 
- newMagnifyingGlassOrigin    = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassDiameter / 2.0 ),
- self.magnifyingGlassView.center.y - ( self.magnifyingGlassDiameter / 2.0 ));
- 
- newMagnifyingGlassSize      = CGSizeMake(self.magnifyingGlassDiameter, 
- self.magnifyingGlassDiameter);
- }
- NSLog(@"magnifying glass diameter = %f", self.magnifyingGlassDiameter);
- 
- 
- 
- NSLog(@"magnifyingGlassDiameter = %f\n\n\n\n\n", self.magnifyingGlassDiameter);
- 
- self.magnifyingGlassView.frame = CGRectMake(newMagnifyingGlassOrigin.x, 
- newMagnifyingGlassOrigin.y, 
- newMagnifyingGlassSize.width, 
- newMagnifyingGlassSize.height);
- }    
- 
- 
- 
- //
- // This chunk of code handles zooming of the magnifying glass
- //
- {
- if (self.magnifyingGlassZoom >= 1.0 && self.magnifyingGlassZoom <= 3.0) 
- {
- newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
- self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
- 
- newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
- self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
- }        
- 
- if (self.magnifyingGlassZoom < 1.0) 
- {
- self.magnifyingGlassZoom = 1.0;
- 
- newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
- self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
- 
- newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
- self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
- }
- 
- if (self.magnifyingGlassZoom > 3.0) 
- {
- self.magnifyingGlassZoom = 3.0;
- 
- newMagnifyingGlassOrigin = CGPointMake(self.magnifyingGlassView.center.x - ( self.magnifyingGlassView.bounds.size.width / 2.0 ) / self.magnifyingGlassZoom, 
- self.magnifyingGlassView.center.y - ( self.magnifyingGlassView.bounds.size.height / 2.0 ) / self.magnifyingGlassZoom );
- 
- newMagnifyingGlassSize = CGSizeMake(self.magnifyingGlassView.frame.size.width / self.magnifyingGlassZoom, 
- self.magnifyingGlassView.frame.size.height / self.magnifyingGlassZoom);
- }
- 
- CGFloat screenScale = [[UIScreen mainScreen] scale];
- 
- 
- newMagnifyingGlassOrigin.x *= screenScale;
- newMagnifyingGlassOrigin.y *= screenScale;
- newMagnifyingGlassSize.width *= screenScale;
- newMagnifyingGlassSize.height *= screenScale;
- 
- 
- CGRect magnifiedImageFrame = CGRectMake( newMagnifyingGlassOrigin.x, newMagnifyingGlassOrigin.y, newMagnifyingGlassSize.width, newMagnifyingGlassSize.height );
- 
- 
- //
- // It bears reminding that CGImageCreateWithImageInRect(CGImageRef, CGRect) creates a subimage from the larger CGImageRef in the 
- // CGRect. This method is specifically NOT for scaling an image; use drawInRect:(CGRect) for (one way at least) scaling.
- //
- CGImageRef magnifyingGlassImageRef = CGImageCreateWithImageInRect( self.worldMapImage.CGImage, magnifiedImageFrame );
- 
- self.magnifyingGlassView.layer.contents = objc_unretainedObject(magnifyingGlassImageRef);
- self.magnifyingGlassView.layer.borderWidth = 4.0;
- self.magnifyingGlassView.layer.cornerRadius = self.magnifyingGlassView.frame.size.width / 2.0;
- 
- CGImageRelease(magnifyingGlassImageRef);
- }
- }
- 
- 
- 
- - (void)updateMagnifyingGlassForZoom
- {
- [self updateMagnifyingGlassLabelForZoom];
- [self updateMagnifyingGlass];
- }
- 
- 
- 
- - (void)updateMagnifyingGlassForDiameter
- {
- [self updateMagnifyingGlassLabelForDiameter];
- [self updateMagnifyingGlass];
- }
- 
- 
- 
- - (void)updateMagnifyingGlassLabelForZoom
- {
- //
- // Update the magnifying glass label to reflect the new magnification zoom
- //
- NSString *zoomString = [NSString stringWithFormat:@"%2.1f", self.magnifyingGlassZoom];
- zoomString = [zoomString stringByAppendingString:@"X"];
- self.magnifyingGlassLabel.text = zoomString;
- }
- 
- 
- 
- - (void)updateMagnifyingGlassLabelForDiameter
- {
- //
- // Update the magnifying glass label to reflect the new magnification zoom
- //
- NSString *diameterString = [NSString stringWithFormat:@"%2.0f", self.magnifyingGlassDiameter];
- diameterString = [diameterString stringByAppendingString:@" pts"];
- self.magnifyingGlassLabel.text = diameterString;    
- }
- */
 
 
 #pragma mark -
@@ -363,7 +281,11 @@
 
 - (CGRect)rectFromImage:(UIImage *)anImage inView:(UIView *)aView
 {
+    NSLog(@"\n\n-rectFromImage:inView:");
 	CGRect imageRect;
+    
+    self.worldMapView.layer.transform = CATransform3DIdentity;
+    self.worldMapImageView.layer.transform = CATransform3DIdentity;
 	
 	////////////////////////////////////////////////////
 	//
@@ -371,46 +293,58 @@
 	//
 	////////////////////////////////////////////////////
     
-    NSLog(@"\n\n");
+    NSLog(@"\n\n-rectFromImage:anImage:inView:");
     NSLog(@"Image size = %f, %f", anImage.size.width, anImage.size.height);
-    NSLog(@"Resizing Rect for view with size = %f, %f", aView.frame.size.width, aView.frame.size.height);
+    NSLog(@"Resizing rect of size = %f, %f", aView.frame.size.width, aView.frame.size.height);
     
-	
 	CGFloat imageResizedWidth;
 	CGFloat imageResizedHeight;
-	CGFloat imageScaleWidth     = aView.frame.size.width / anImage.size.width;
-	CGFloat imageScaleHeight    = aView.frame.size.height / anImage.size.height;
+	CGFloat imageScaleWidth     = kMaxWidth / anImage.size.width;
+	CGFloat imageScaleHeight    = kMaxHeight / anImage.size.height;
     
     NSLog(@"scaled width and height = %f, %f", imageScaleWidth, imageScaleHeight);
+	    
+    if (imageScaleWidth > 1.0 || imageScaleHeight > 1.0) 
+    {
+        imageScaleWidth     = 1.0;
+        imageScaleHeight    = 1.0;
+    }
+    else
+    {
+        imageScaleWidth			= kMaxWidth / anImage.size.width;
+        imageScaleHeight		= kMaxHeight / anImage.size.height;
+    }
 	
-	if (anImage.size.width >= anImage.size.height) // Landscape
+	if (anImage.size.width > anImage.size.height) // Landscape
 	{
-		NSLog(@"Landscape");
-		imageResizedWidth       = floorf( anImage.size.width * imageScaleHeight );
-		imageResizedHeight      = floorf( anImage.size.height * imageScaleHeight );
+        NSLog(@"Landscape");
+		imageResizedWidth		= floorf(anImage.size.width * imageScaleWidth);
+		imageResizedHeight		= floorf(anImage.size.height * imageScaleWidth);
+	}
+	if (anImage.size.height > anImage.size.width) // Portrait
+	{
+        NSLog(@"Portait");
+		imageResizedWidth		= floorf(anImage.size.width * imageScaleHeight);
+		imageResizedHeight		= floorf(anImage.size.height * imageScaleHeight);
+	}
+	if (anImage.size.height == anImage.size.width) 
+	{
+		imageResizedWidth		= floorf(anImage.size.width * imageScaleWidth);
+		imageResizedHeight		= floorf(anImage.size.height * imageScaleWidth);
 	}
     
-	else if (anImage.size.height >= anImage.size.width) // Landscape
-	{
-		NSLog(@"Landscape");
-		imageResizedWidth       = floorf( anImage.size.width * imageScaleWidth );
-		imageResizedHeight      = floorf( anImage.size.height * imageScaleWidth );
-	}
+    NSLog(@"aView center = %f, %f", aView.center.x, aView.center.y);
     
-	else // Square
-	{
-		NSLog(@"Square");
-		imageResizedWidth       = floorf( anImage.size.width * imageScaleWidth );
-		imageResizedHeight      = floorf( anImage.size.height * imageScaleHeight );
-	}
-    
-	imageRect            = CGRectMake(aView.center.x - imageResizedWidth / 2.0, // origin.x
+
+	imageRect           = CGRectMake(aView.center.x - imageResizedWidth / 2.0, // origin.x
                                       aView.center.y - imageResizedHeight / 2.0, // origin.y
                                       imageResizedWidth, // width
                                       imageResizedHeight); // height
     
-    NSLog(@"resized imageRect = %f, %f, %f, %f", imageRect.origin.x, imageRect.origin.y, imageRect.size.width, imageRect.size.height);
+    NSLog(@"To resized imageRect = %f, %f, %f, %f", imageRect.origin.x, imageRect.origin.y, imageRect.size.width, imageRect.size.height);
     NSLog(@"\n\n");
+    
+    
     
     return imageRect;
 }
@@ -470,33 +404,6 @@
 	//
     CGContextRestoreGState(context);
 }
-
-
-
-/*
- - (void)drawView
- {
- NSLog(@"-drawView");
- 
- CGRect worldRect = CGRectMake(200.0, 200.0, self.worldMapImage.size.width, self.worldMapImage.size.height);
- 
- // Drawing code
- CGImageRef image = CGImageRetain(_worldMapImage.CGImage);
- 
- CGRect imageRect;
- imageRect.origin = CGPointMake(0.0, 0.0);
- imageRect.size = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
- 
- CGContextRef context = UIGraphicsGetCurrentContext();       
- CGContextClipToRect(context, CGRectMake(0.0, 0.0, worldRect.size.width, worldRect.size.height));      
- CGContextDrawTiledImage(context, imageRect, image);
- CGImageRelease(image);
- 
- [self.worldMapImageView.layer renderInContext:context];
- }
- */
-
-
 
 
 
@@ -623,7 +530,7 @@
     
     if ([gestureRecognizer state] == UIGestureRecognizerStateChanged) 
     {
-        NSLog(@"\n\n\nZoom Scale = %f", gestureRecognizer.scale);
+        //NSLog(@"\n\n\nZoom Scale = %f", gestureRecognizer.scale);
         
         self.magnifier.magnifyingGlassZoom = gestureRecognizer.scale * 1.75;
         
@@ -665,8 +572,8 @@
         [self.magnifier updateMagnifyingGlassForDiameter];
         
         
-        NSLog(@"reticleScaleIncrement = %f", reticleScaleIncrement);
-        NSLog(@"resulting reticleDiameter = %f\n\n", self.magnifier.magnifyingGlassDiameter);
+        //NSLog(@"reticleScaleIncrement = %f", reticleScaleIncrement);
+        //NSLog(@"resulting reticleDiameter = %f\n\n", self.magnifier.magnifyingGlassDiameter);
         
     }
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
@@ -705,8 +612,8 @@
         [self.magnifier updateMagnifyingGlassForDiameter];
         
         
-        NSLog(@"magnifyingGlassResizeIncrement = %f", magnifyingGlassResizeIncrement);
-        NSLog(@"resulting magnifyingGlassDiameter = %f\n\n", self.magnifier.magnifyingGlassDiameter);
+        //NSLog(@"magnifyingGlassResizeIncrement = %f", magnifyingGlassResizeIncrement);
+        //NSLog(@"resulting magnifyingGlassDiameter = %f\n\n", self.magnifier.magnifyingGlassDiameter);
         
     }
     if ([gestureRecognizer state] == UIGestureRecognizerStateEnded) 
@@ -804,6 +711,210 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+}
+
+
+
+#pragma mark -
+#pragma mark Camera Methods
+
+- (IBAction)choosePhoto:(id)sender 
+{
+	NSLog(@"-choosePhoto:");
+	
+	choosePhotoAction = [[UIActionSheet alloc] initWithTitle:@"Choose A New Image" 
+													 delegate:self cancelButtonTitle:@"Cancel" 
+									   destructiveButtonTitle:nil 
+											otherButtonTitles:@"Camera", @"Photo Library", nil];
+	
+	choosePhotoAction.delegate = self;
+	
+	choosePhotoAction.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+	
+	[choosePhotoAction showInView:self.view];
+	
+	NSLog(@"\n\n");
+}
+
+
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (choosePhotoAction) 
+	{
+		NSLog(@"Choosing a new background.");
+		/*
+         if (buttonIndex == 0) 
+         {
+         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) 
+         {
+         
+         NSLog(@"Choose live stream");
+         UIImagePickerController *picker = [[[UIImagePickerController alloc] init] autorelease];
+         
+         self.imagePicker = picker;
+         
+         self.imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+         self.imagePicker.allowsEditing = NO;
+         self.imagePicker.showsCameraControls = NO;
+         self.imagePicker.wantsFullScreenLayout = YES;
+         [self presentModalViewController:self.imagePicker animated:YES];
+         
+         self.imagePicker.cameraOverlayView = self.overlayView;
+         
+         [self moveOptionsViewOffScreen];
+         self.liveStreamCameraButton.hidden = YES;
+         
+         [self startAnimation];
+         
+         //
+         // This actually starts the music going.
+         //
+         if (self.playMusic) 
+         {
+         [self startPlayback];
+         }
+         
+         
+         //
+         // Without this, UIGestureRecognizer doesn't know who the First Responder is.
+         //
+         [self becomeFirstResponder];
+         
+         }
+         else 
+         {
+         NSLog(@"Oops! No camera available");
+         UIAlertView *alert = [[UIAlertView alloc] 
+         initWithTitle:@"No camera available." 
+         message:nil 
+         delegate:nil 
+         cancelButtonTitle:@"Done" 
+         otherButtonTitles:nil];
+         
+         [alert show];
+         [alert release];
+         [self moveOptionsViewOffScreen];
+         }
+         }
+         */
+		if (buttonIndex == 0) 
+		{
+			
+			if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) 
+			{
+				NSLog(@"Choosing to take a picture");
+				
+				UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+				picker.sourceType				= UIImagePickerControllerSourceTypeCamera;
+				picker.cameraDevice				= UIImagePickerControllerCameraCaptureModePhoto;
+                //				picker.allowsEditing			= YES;
+				picker.videoQuality				= UIImagePickerControllerQualityType640x480;
+				
+				picker.delegate					= self;
+				
+				[self presentModalViewController:picker animated:YES];
+				
+				NSLog(@"\n\n");
+			}
+			else 
+			{
+				NSLog(@"Oops! No camera available");
+				UIAlertView *alert = [[UIAlertView alloc] 
+									  initWithTitle:@"No camera available." 
+									  message:nil 
+									  delegate:nil 
+									  cancelButtonTitle:@"Done" 
+									  otherButtonTitles:nil];
+				
+				[alert show];
+//				[self moveOptionsViewOffScreen];
+			}
+		}
+		
+		else if (buttonIndex == 1) 
+		{
+			NSLog(@"Choosing from the photo library.");
+			
+			if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) 
+			{
+				UIImagePickerController *picker	= [[UIImagePickerController alloc] init];
+				picker.sourceType				= UIImagePickerControllerSourceTypePhotoLibrary;
+				picker.delegate					= self;
+				
+				// Picker is displayed asynchronously.
+				[self presentModalViewController:picker animated:YES];
+				
+				NSLog(@"\n\n");
+			} 		
+			
+			else 
+			{
+				UIAlertView *alert = [[UIAlertView alloc] 
+									  initWithTitle:@"No photos in your image library." 
+									  message:nil 
+									  delegate:nil 
+									  cancelButtonTitle:@"Done" 
+									  otherButtonTitles:nil];
+				
+				[alert show];
+				
+			}
+		}
+	}	
+}
+
+
+
+- (void)imagePickerController:(UIImagePickerController *)picker 
+didFinishPickingMediaWithInfo:(NSDictionary *)info 
+{
+	NSLog(@"\n\n-imagePickerController:didFinishPickingMediaWithInfo:");
+	
+	// If the camera exists, use it. Otherwise, use the images already available on the device
+	UIImage *originalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
+	UIImage *editedImage = [info valueForKey:UIImagePickerControllerEditedImage];
+	
+	// 
+	// Clean-out newImage
+	//
+	UIImage *newImage = nil;
+	
+	if (editedImage) 
+	{
+		newImage = editedImage;
+		NSLog(@"newImage just assigned as editedImage.");
+	}
+	else
+	{
+		newImage = originalImage;
+		NSLog(@"newImage just assigned as originalImage.");
+	}
+    
+    NSLog(@"image orientation = %u", newImage.imageOrientation);
+    NSLog(@"newImage size = %f, %f", newImage.size.width, newImage.size.height);
+	
+    self.worldMapImage = newImage;
+
+    //[self setNewImage:self.worldMapImage inImageView:self.worldMapImageView];
+	
+
+	[[picker parentViewController] dismissModalViewControllerAnimated:YES];	
+	
+	
+	//	NSLog(@"finished image picker dismiss\n\n");
+	NSLog(@"\n\n");
+}
+
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker 
+{
+	NSLog(@"-imagePickerControllerDidCancel:");
+	
+    [[picker parentViewController] dismissModalViewControllerAnimated:YES];
+	
+	NSLog(@"\n\n");
 }
 
 

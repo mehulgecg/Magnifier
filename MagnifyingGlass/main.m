@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
 //    return retVal;
 
     int retVal = 0;
-    @autoreleasepool {
+    @autoreleasepool 
+    {
         retVal = UIApplicationMain(argc, argv, nil, NSStringFromClass([MagnifyAppDelegate class]));
     }
     return retVal;

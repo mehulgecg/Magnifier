@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E695C8FA13A402C500E8613C /* UIImage+ScaleRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = E695C8F913A402C500E8613C /* UIImage+ScaleRotate.m */; };
+		E6B368B413A19A18008FE4B8 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6B368B313A19A18008FE4B8 /* AssetsLibrary.framework */; };
+		E6B368BA13A27EE2008FE4B8 /* Image_Selection_Button.png in Resources */ = {isa = PBXBuildFile; fileRef = E6B368B613A27EE2008FE4B8 /* Image_Selection_Button.png */; };
+		E6B368BB13A27EE2008FE4B8 /* CameraIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E6B368B713A27EE2008FE4B8 /* CameraIcon.png */; };
+		E6B368BF13A27F5D008FE4B8 /* CameraIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6B368BE13A27F5D008FE4B8 /* CameraIcon@2x.png */; };
 		E6BD649F138B87A700E8BFB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6BD649E138B87A700E8BFB2 /* UIKit.framework */; };
 		E6BD64A1138B87A700E8BFB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6BD64A0138B87A700E8BFB2 /* Foundation.framework */; };
 		E6BD64A3138B87A700E8BFB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6BD64A2138B87A700E8BFB2 /* CoreGraphics.framework */; };
@@ -29,6 +34,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E695C8F813A402C400E8613C /* UIImage+ScaleRotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ScaleRotate.h"; sourceTree = "<group>"; };
+		E695C8F913A402C500E8613C /* UIImage+ScaleRotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ScaleRotate.m"; sourceTree = "<group>"; };
+		E6B368B313A19A18008FE4B8 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		E6B368B613A27EE2008FE4B8 /* Image_Selection_Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Image_Selection_Button.png; sourceTree = "<group>"; };
+		E6B368B713A27EE2008FE4B8 /* CameraIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CameraIcon.png; sourceTree = "<group>"; };
+		E6B368BE13A27F5D008FE4B8 /* CameraIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CameraIcon@2x.png"; sourceTree = "<group>"; };
 		E6BD649A138B87A700E8BFB2 /* Magnifier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Magnifier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6BD649E138B87A700E8BFB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E6BD64A0138B87A700E8BFB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -62,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6B368B413A19A18008FE4B8 /* AssetsLibrary.framework in Frameworks */,
 				E6BD64EB138B88E600E8BFB2 /* QuartzCore.framework in Frameworks */,
 				E6BD649F138B87A700E8BFB2 /* UIKit.framework in Frameworks */,
 				E6BD64A1138B87A700E8BFB2 /* Foundation.framework in Frameworks */,
@@ -93,6 +105,7 @@
 		E6BD649D138B87A700E8BFB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E6B368B313A19A18008FE4B8 /* AssetsLibrary.framework */,
 				E6BD64EA138B88E600E8BFB2 /* QuartzCore.framework */,
 				E6BD649E138B87A700E8BFB2 /* UIKit.framework */,
 				E6BD64A0138B87A700E8BFB2 /* Foundation.framework */,
@@ -113,6 +126,8 @@
 				E6EFDEE013A0085C00A4A7C7 /* MagnifyingGlass.m */,
 				E6BD64CC138B87FB00E8BFB2 /* InfoViewController.h */,
 				E6BD64CD138B87FB00E8BFB2 /* InfoViewController.m */,
+				E695C8F813A402C400E8613C /* UIImage+ScaleRotate.h */,
+				E695C8F913A402C500E8613C /* UIImage+ScaleRotate.m */,
 				E6BD64E9138B88B000E8BFB2 /* Graphics */,
 				E6BD64E8138B888500E8BFB2 /* Xib's */,
 				E6BD64CF138B87FB00E8BFB2 /* MagnifyingGlass.xcdatamodeld */,
@@ -145,6 +160,9 @@
 		E6BD64E9138B88B000E8BFB2 /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
+				E6B368B613A27EE2008FE4B8 /* Image_Selection_Button.png */,
+				E6B368BE13A27F5D008FE4B8 /* CameraIcon@2x.png */,
+				E6B368B713A27EE2008FE4B8 /* CameraIcon.png */,
 				E6BD64CE138B87FB00E8BFB2 /* iPhone4.png */,
 				E6BD64D1138B87FB00E8BFB2 /* KrazyKimWarMap.jpg */,
 				E6BD64D2138B87FB00E8BFB2 /* KrazyKimWarMap.png */,
@@ -212,6 +230,9 @@
 				E6BD64E3138B883300E8BFB2 /* MainWindow.xib in Resources */,
 				E6BD64E5138B885E00E8BFB2 /* MainView.xib in Resources */,
 				E6BD64E7138B887900E8BFB2 /* InfoView.xib in Resources */,
+				E6B368BA13A27EE2008FE4B8 /* Image_Selection_Button.png in Resources */,
+				E6B368BB13A27EE2008FE4B8 /* CameraIcon.png in Resources */,
+				E6B368BF13A27F5D008FE4B8 /* CameraIcon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +249,7 @@
 				E6BD64DE138B87FB00E8BFB2 /* MagnifyAppDelegate.m in Sources */,
 				E6BD64DF138B87FB00E8BFB2 /* MagnifyingGlassViewController.m in Sources */,
 				E6EFDEE113A0085C00A4A7C7 /* MagnifyingGlass.m in Sources */,
+				E695C8FA13A402C500E8613C /* UIImage+ScaleRotate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +271,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -259,6 +282,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -267,6 +291,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -275,6 +300,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

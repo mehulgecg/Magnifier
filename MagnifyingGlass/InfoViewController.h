@@ -15,9 +15,10 @@
 - (void)infoViewControllerDidFinish:(InfoViewController *)controller;
 @end
 
-@interface InfoViewController : UIViewController 
+@interface InfoViewController : UIViewController <UIGestureRecognizerDelegate>
 
 @property (assign, nonatomic) IBOutlet id <InfoViewControllerDelegate> delegate;
+@property (nonatomic, retain)           UITapGestureRecognizer      *tapRecognizer;
 
 - (IBAction)done:(id)sender;
 

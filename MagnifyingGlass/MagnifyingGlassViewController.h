@@ -13,7 +13,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-@interface MagnifyingGlassViewController : UIViewController <InfoViewControllerDelegate, UIGestureRecognizerDelegate> 
+@interface MagnifyingGlassViewController : UIViewController <InfoViewControllerDelegate, UIGestureRecognizerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate> 
 {
     UIView          *_worldMapView;
     UIImageView     *_worldMapImageView;
@@ -23,6 +23,10 @@
     MagnifyingGlass *magnifier;
     UIView          *magnifierView;
     UILabel         *magnifierLabel;
+    
+    
+	// UIAlertSheet
+	UIActionSheet   *choosePhotoAction;
 }
 
 @property (nonatomic, retain)           NSManagedObjectContext      *managedObjectContext;
@@ -44,6 +48,9 @@
 @property (nonatomic, retain)           UIPinchGestureRecognizer    *pinchRecognizer;
 @property (nonatomic, retain)           UIRotationGestureRecognizer *rotationRecognizer;
 @property (nonatomic, retain)           UIPanGestureRecognizer      *panResizeRecognizer;
+
+
+@property (nonatomic, retain)           UIImagePickerController     *imagePicker;
 
 
 // MagnifyingGlass Public Methods

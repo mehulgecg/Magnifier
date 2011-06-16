@@ -202,11 +202,13 @@ static BOOL     hasRunOnce              = NO;
 	self.worldMapImageView.layer.minificationFilterBias = 0;
 
     
-    anImage = [anImage scaleToRect:newImageRect];
+    UIImage *tempImage = [anImage scaleToRect:newImageRect];
     NSLog(@"anImage scaled size = %f, %f", anImage.size.width, anImage.size.height);
+    NSLog(@"tempImage scaled size = %f, %f", tempImage.size.width, tempImage.size.height);
+
     
-    
-    self.worldMapImageView.image = anImage;
+    self.worldMapImageView.image = tempImage;
+    self.worldMapImageView.alpha = 0.25;
     //self.worldMapImageView.image = [UIImage imageWithCGImage:self.worldMapImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
     
 
@@ -223,15 +225,24 @@ static BOOL     hasRunOnce              = NO;
     //CGSize newImageSize = CGSizeMake(newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
     //CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
     //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+    
     UIGraphicsBeginImageContextWithOptions([[UIScreen mainScreen] bounds].size, NO, 0);
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    //CGContextDrawImage(context, newImageRect, anImage.CGImage);
-
-    /*
-    CGContextSaveGState(context);
+    CGContextClearRect(context, newImageRect);
     
+    CGContextSaveGState(context);
+
+    NSLog(@"Before I tranlate CTM, record what worldMapView.center is (%f, %f)", self.worldMapView.center.x, self.worldMapView.center.y);
+    
+    CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y);
+    CGContextRotateCTM(context, M_PI);
+    //CGContextConcatCTM(context, [self.magnifierView transform]);
+    CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y);
+
+    
+    /*
     // Center the context around the window's anchor point
     CGContextTranslateCTM(context, [self.worldMapView center].x, [self.worldMapView center].y);
     //CGContextTranslateCTM(context, newImageRect.origin.x, newImageRect.origin.y);
@@ -247,22 +258,29 @@ static BOOL     hasRunOnce              = NO;
                           -[self.worldMapView bounds].size.width * [[self.worldMapView layer] anchorPoint].x,
                           -[self.worldMapView bounds].size.height * [[self.worldMapView layer] anchorPoint].y);
     
-    
-    CGRect newImageRect2 = CGRectMake(newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
-    
-//    CGContextDrawImage(context, newImageRect2, anImage.CGImage);
     */
+    //CGRect newImageRect2 = CGRectMake(newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
+        
+    //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
+    
+    CGContextDrawImage(context, newImageRect, anImage.CGImage);
+
+    //CGContextTranslateCTM(context, [self.worldMapView center].x, [self.worldMapView center].y);
+    
+    //CGContextRotateCTM(context, M_PI);
+    
+    
     //
     // This is where the image is drawn to the origin of the image rect.
     //
-    UIGraphicsPushContext(context);
+    //UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-    [anImage drawInRect:newImageRect];
-    UIGraphicsPopContext();
+    //[anImage drawInRect:newImageRect];
+    //UIGraphicsPopContext();
     
-    /*
+    
     CGContextRestoreGState(context);
-    */
+    
     
     //
     // Retrieve the screenshot image containing both the camera content and the overlay view

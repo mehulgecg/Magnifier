@@ -10,9 +10,6 @@
 
 @interface MagnifyingGlass : NSObject
 {
-    UIView          *magnifyingGlassView;
-    UILabel         *magnifyingGlassLabel;
-    UIImage         *magnifyingGlassImage;
 }
 
 @property (nonatomic, retain) IBOutlet  UIView          *magnifyingGlassView;

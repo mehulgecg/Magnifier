@@ -17,6 +17,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <ImageIO/ImageIO.h>
+#import <CoreImage/CoreImage.h>
 
 
 
@@ -24,7 +25,7 @@
 
 //CGFloat         DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 //CGFloat         RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
-static CGFloat  kMaxHeight				= 420.0; // Defines maximum image height
+static CGFloat  kMaxHeight				= 380.0; // Defines maximum image height
 static CGFloat  kMaxWidth				= 280.0; // Defines maximum image width
 static BOOL     hasRunOnce              = NO;
 
@@ -75,6 +76,8 @@ static BOOL     hasRunOnce              = NO;
 @synthesize panResizeRecognizer;
 
 @synthesize imagePicker;
+@synthesize ImageTestingView;
+@synthesize ImageTestingImageView;
 
 
 
@@ -136,6 +139,8 @@ static BOOL     hasRunOnce              = NO;
 {
     NSLog(@"\n\n-viewDidUnload\n\n");
     
+    [self setImageTestingView:nil];
+    [self setImageTestingImageView:nil];
     [super viewDidUnload];
     
     //self.worldMapImageView = nil;
@@ -208,7 +213,7 @@ static BOOL     hasRunOnce              = NO;
 
     
     self.worldMapImageView.image = tempImage;
-    self.worldMapImageView.alpha = 0.25;
+    self.worldMapImageView.alpha = 0.9;
     //self.worldMapImageView.image = [UIImage imageWithCGImage:self.worldMapImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
     
 
@@ -220,54 +225,47 @@ static BOOL     hasRunOnce              = NO;
     // UIGraphicsBeginImageContext, uses UIKit's coorodinate system, the origin for which is the upper left-hand corner of the 
     // screen.
     //
-    //CGSize newImageSize = CGSizeMake(150.0, 200.0);
-    //CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
-    //CGSize newImageSize = CGSizeMake(newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
-    //CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
-    //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+    // Why wouldn't I want to pass-in the actual image size?
+    //
+    CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
     
-    UIGraphicsBeginImageContextWithOptions([[UIScreen mainScreen] bounds].size, NO, 0);
+    UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+    
+    
+    //UIGraphicsBeginImageContextWithOptions([[UIScreen mainScreen] bounds].size, NO, 0);
+    //NSLog(@"[[UIScreen mainScreen]bounds] = %f, %f, %f, %f", [[UIScreen mainScreen]bounds].origin.x, [[UIScreen mainScreen]bounds].origin.y, [[UIScreen mainScreen]bounds].size.width, [[UIScreen mainScreen]bounds].size.height);
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    CGContextClearRect(context, newImageRect);
+    CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
+    CGContextClearRect(context, tempRect);
     
     CGContextSaveGState(context);
 
-    NSLog(@"Before I tranlate CTM, record what worldMapView.center is (%f, %f)", self.worldMapView.center.x, self.worldMapView.center.y);
-    
-    CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y);
-    CGContextRotateCTM(context, M_PI);
-    //CGContextConcatCTM(context, [self.magnifierView transform]);
-    CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y);
 
+    //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
+    CGContextTranslateCTM(context, newImageSize.width / 2.0, newImageSize.height / 2.0);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextTranslateCTM(context, -newImageSize.width / 2.0, -newImageSize.height / 2.0);
+    
+    
+    //CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y);
+    //CGContextRotateCTM(context, M_PI);
+    //CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y);
+
     /*
-    // Center the context around the window's anchor point
-    CGContextTranslateCTM(context, [self.worldMapView center].x, [self.worldMapView center].y);
-    //CGContextTranslateCTM(context, newImageRect.origin.x, newImageRect.origin.y);
-    //CGContextTranslateCTM(context, newImageRect.origin.x / 2.0, newImageRect.origin.y / 2.0);
-    
-    // Apply the window's transform about the anchor point
-    CGContextConcatCTM(context, [self.worldMapView transform]);
-    
-    
+    //
     // Offset by the portion of the bounds left of and above the anchor point
-    
+    //
     CGContextTranslateCTM(context,
                           -[self.worldMapView bounds].size.width * [[self.worldMapView layer] anchorPoint].x,
                           -[self.worldMapView bounds].size.height * [[self.worldMapView layer] anchorPoint].y);
     
     */
-    //CGRect newImageRect2 = CGRectMake(newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale]);
-        
-    //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
-    CGContextDrawImage(context, newImageRect, anImage.CGImage);
 
-    //CGContextTranslateCTM(context, [self.worldMapView center].x, [self.worldMapView center].y);
-    
-    //CGContextRotateCTM(context, M_PI);
+    CGContextDrawImage(context, tempRect, anImage.CGImage);
     
     
     //
@@ -289,6 +287,31 @@ static BOOL     hasRunOnce              = NO;
     NSLog(@"final image size = %f, %f", self.worldMapImage.size.width, self.worldMapImage.size.height);
     
     UIGraphicsEndImageContext();
+    
+    self.ImageTestingImageView.image = self.worldMapImage;
+
+    
+    //
+    // Core Image Code
+    //
+//    CGRect imageTestingRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
+//    CIImage *tempCoreImage = [CIImage imageWithCGImage:anImage.CGImage];
+//    CGRect tempCoreImageRect = [tempCoreImage extent];
+//    NSLog(@"tempCoreImageRect = %f, %f, %f, %f", tempCoreImageRect.origin.x, tempCoreImageRect.origin.y, tempCoreImageRect.size.width, tempCoreImageRect.size.height);
+//    CGAffineTransform transform = CGAffineTransformMakeScale(10.0, 10.0);
+//    tempCoreImage = [tempCoreImage imageByApplyingTransform:transform];
+
+//    CIFilter *scaleAdjust = [CIFilter filterWithName:@"CIAffineTransform"];
+//    [scaleAdjust setDefaults];
+//    [scaleAdjust setValue:tempCoreImage forKey:@"inputImage"];
+//    [scaleAdjust setValue:5.0 forKey:@"inputTransform"];
+    
+//    CIContext *ciContext = [CIContext contextWithOptions:nil];
+    
+    //UIImage *ciImage = [UIImage imageWithCIImage:tempCoreImage]; // This will not work!
+//    UIImage *ciImage = [UIImage imageWithCGImage:[ciContext createCGImage:tempCoreImage fromRect:CGRectMake(0, 0, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale])]];
+//    NSLog(@"ciImage size = %f, %f", ciImage.size.width, ciImage.size.height);
+//    self.ImageTestingImageView.image = ciImage;
     
     NSLog(@"\n\n");
 }
@@ -438,7 +461,7 @@ static BOOL     hasRunOnce              = NO;
 	
     // Tap Gesture (for recentering magnifying glass)
 	gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTapFromGestureRecognizer:)];
-	[self.worldMapView addGestureRecognizer:gestureRecognizer];
+	[self.view addGestureRecognizer:gestureRecognizer];
 	self.tapRecognizer                      = (UITapGestureRecognizer *)gestureRecognizer;
 	self.tapRecognizer.numberOfTapsRequired = 2;
 	self.tapRecognizer.delegate             = self;
@@ -474,9 +497,14 @@ static BOOL     hasRunOnce              = NO;
 - (void)handleDoubleTapFromGestureRecognizer:(UITapGestureRecognizer *)recognizer
 {
     NSLog(@"\n\n\n\nDouble tap\n\n\n\n");
+    //CGSize screenSize = [[UIScreen mainScreen]bounds].size;
+    //CGPoint screenCenter = CGPointMake(screenSize.width / 2.0, screenSize.height / 2.0);
+    
+    CGPoint screenCenter = self.worldMapImageView.center;
+    
     [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.magnifierView.transform = CGAffineTransformMakeScale(1.05, 1.05);
-        self.magnifierView.layer.position = CGPointMake(160, 230.0);
+        self.magnifierView.layer.position = screenCenter;
         
         
     }completion:^( BOOL finished )

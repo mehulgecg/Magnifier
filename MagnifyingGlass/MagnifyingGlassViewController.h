@@ -12,21 +12,14 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import <CoreImage/CoreImage.h>
 
 @interface MagnifyingGlassViewController : UIViewController <InfoViewControllerDelegate, UIGestureRecognizerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate> 
 {
-    UIView          *_worldMapView;
-    UIImageView     *_worldMapImageView;
-    UIImage         *_worldMapImage;
-    CGSize          _worldImageSize;
-    
-    MagnifyingGlass *magnifier;
-    UIView          *magnifierView;
-    UILabel         *magnifierLabel;
-    
-    
 	// UIAlertSheet
 	UIActionSheet   *choosePhotoAction;
+    UIView *ImageTestingView;
+    UIImageView *ImageTestingImageView;
 }
 
 @property (nonatomic, retain)           NSManagedObjectContext      *managedObjectContext;
@@ -49,8 +42,9 @@
 @property (nonatomic, retain)           UIRotationGestureRecognizer *rotationRecognizer;
 @property (nonatomic, retain)           UIPanGestureRecognizer      *panResizeRecognizer;
 
-
 @property (nonatomic, retain)           UIImagePickerController     *imagePicker;
+@property (nonatomic, strong) IBOutlet UIView *ImageTestingView;
+@property (nonatomic, strong) IBOutlet UIImageView *ImageTestingImageView;
 
 
 // MagnifyingGlass Public Methods

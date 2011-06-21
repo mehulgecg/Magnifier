@@ -20,12 +20,14 @@
 	UIActionSheet   *choosePhotoAction;
     UIView *ImageTestingView;
     UIImageView *ImageTestingImageView;
+    UIView *imageBoardView;
 }
 
 @property (nonatomic, retain)           NSManagedObjectContext      *managedObjectContext;
 
-@property (nonatomic, retain) IBOutlet  UIView          *worldMapView;
-@property (nonatomic, retain) IBOutlet  UIImageView     *worldMapImageView;
+@property (nonatomic, retain) IBOutlet  UIView          *imageContainerView;
+@property (nonatomic, strong) IBOutlet UIView *imageBoardView;
+@property (nonatomic, retain) IBOutlet  UIImageView     *imageContainerImageView;
 @property (nonatomic, retain)           UIImage         *worldMapImage;
 @property                               CGSize          worldImageSize;
 

@@ -57,8 +57,9 @@ static BOOL     hasRunOnce              = NO;
 
 @synthesize managedObjectContext = _managedObjectContext;
 
-@synthesize worldMapView        = _worldMapView;
-@synthesize worldMapImageView   = _worldMapImageView;
+@synthesize imageContainerView        = _worldMapView;
+@synthesize imageBoardView;
+@synthesize imageContainerImageView   = _worldMapImageView;
 @synthesize worldMapImage       = _worldMapImage;
 @synthesize worldImageSize      = _worldImageSize;
 
@@ -113,7 +114,7 @@ static BOOL     hasRunOnce              = NO;
     NSLog(@"\n\n-viewDidAppear\n\n");
     [super viewDidAppear:animated];
     
-    [self setNewImage:self.worldMapImage inImageView:self.worldMapImageView];
+    [self setNewImage:self.worldMapImage inImageView:self.imageContainerImageView];
  
     //NSLog(@"image orientation = %u", self.worldMapImage.imageOrientation);
     
@@ -141,6 +142,7 @@ static BOOL     hasRunOnce              = NO;
     
     [self setImageTestingView:nil];
     [self setImageTestingImageView:nil];
+    [self setImageBoardView:nil];
     [super viewDidUnload];
     
     //self.worldMapImageView = nil;
@@ -182,29 +184,46 @@ static BOOL     hasRunOnce              = NO;
     //
     // Scale the rect to fit the image within the the bounds of the screen
     //
-    CGRect newImageRect = [self rectFromImage:anImage inView:self.worldMapView];
+    CGRect newImageRect = [self rectFromImage:anImage inView:self.imageContainerView];
     NSLog(@"newImageRect = (%f, %f, %f, %f)", newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width, newImageRect.size.height);
    
     
     //
     // Resize container view to the diminsions of the resized rect.
     //
-    self.worldMapView.center = self.view.center;
-    self.worldMapView.frame = CGRectMake(newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width, newImageRect.size.height);
-    NSLog(@"worldMapView frame = %f, %f, %f, %f", self.worldMapView.frame.origin.x, self.worldMapView.frame.origin.y, self.worldMapView.frame.size.width, self.worldMapView.frame.size.height);
+    CGFloat inset = 10.0;
+    CGFloat offset = 10.0;
+    self.imageContainerView.center = self.view.center;
+    self.imageContainerView.frame = CGRectMake(newImageRect.origin.x, 
+                                               newImageRect.origin.y, 
+                                               newImageRect.size.width + 4.0 * offset, 
+                                               newImageRect.size.height + 4.0 * offset);
+    NSLog(@"worldMapView frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
+    self.imageContainerView.center = self.view.center;
     
+    self.imageBoardView.center = self.view.center;
+    self.imageBoardView.frame = CGRectMake(inset, 
+                                           inset, 
+                                           newImageRect.size.width + 2.0 * offset, 
+                                           newImageRect.size.height + 2.0 * offset);
+    self.imageBoardView.layer.borderColor = [[UIColor whiteColor] CGColor];
+    self.imageBoardView.layer.borderWidth = 5.0;
+   
     
     //
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
-    self.worldMapImageView.center = self.worldMapView.center;
-    self.worldMapImageView.frame = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
-    NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.worldMapImageView.frame.origin.x, self.worldMapImageView.frame.origin.y, self.worldMapImageView.frame.size.width, self.worldMapImageView.frame.size.height);
+    self.imageContainerImageView.center = self.imageContainerView.center;
+    self.imageContainerImageView.frame = CGRectMake(2.0 * inset, 
+                                                    2.0 * inset, 
+                                                    newImageRect.size.width, 
+                                                    newImageRect.size.height);
+    NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
     NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
     
     
-    self.worldMapImageView.layer.minificationFilter = kCAFilterTrilinear;
-	self.worldMapImageView.layer.minificationFilterBias = 0;
+    self.imageContainerImageView.layer.minificationFilter = kCAFilterTrilinear;
+	self.imageContainerImageView.layer.minificationFilterBias = 0;
 
     
     UIImage *tempImage = [anImage scaleToRect:newImageRect];
@@ -212,8 +231,9 @@ static BOOL     hasRunOnce              = NO;
     NSLog(@"tempImage scaled size = %f, %f", tempImage.size.width, tempImage.size.height);
 
     
-    self.worldMapImageView.image = tempImage;
-    self.worldMapImageView.alpha = 0.9;
+    self.imageContainerImageView.image = tempImage;
+    self.imageContainerImageView.alpha = 0.5;
+
     //self.worldMapImageView.image = [UIImage imageWithCGImage:self.worldMapImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
     
 
@@ -227,8 +247,7 @@ static BOOL     hasRunOnce              = NO;
     //
     // Why wouldn't I want to pass-in the actual image size?
     //
-    CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
-    
+    CGSize newImageSize = CGSizeMake(newImageRect.size.width + 4.0 * offset, newImageRect.size.height + 4.0 * offset);
     UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
     
     
@@ -237,23 +256,33 @@ static BOOL     hasRunOnce              = NO;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
+    //CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
+    CGRect tempRect = CGRectMake(2.0 * inset, 2.0 * inset, newImageRect.size.width, newImageRect.size.height);
+    
     CGContextClearRect(context, tempRect);
+    //CGContextClearRect(context, newImageRect);
     
     CGContextSaveGState(context);
 
 
     //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
-    CGContextTranslateCTM(context, newImageSize.width / 2.0, newImageSize.height / 2.0);
-    CGContextScaleCTM(context, 1.0, -1.0);
-    CGContextTranslateCTM(context, -newImageSize.width / 2.0, -newImageSize.height / 2.0);
+    //CGContextTranslateCTM(context, newImageSize.width / 2.0, newImageSize.height / 2.0);
+    //CGContextScaleCTM(context, 1.0, -1.0);
+    //CGContextTranslateCTM(context, -newImageSize.width / 2.0, -newImageSize.height / 2.0);
     
     
-    //CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y);
-    //CGContextRotateCTM(context, M_PI);
-    //CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y);
+//    CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y / 1.0);
+//    CGContextScaleCTM(context, 1.0, -1.0);
+//    CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y / 1.0);
 
+    /*
+     CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y);
+     CGContextScaleCTM(context, 1.0, -1.0);
+     CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y);
+     */
+    
+    
     /*
     //
     // Offset by the portion of the bounds left of and above the anchor point
@@ -264,17 +293,18 @@ static BOOL     hasRunOnce              = NO;
     
     */
     
-
-    CGContextDrawImage(context, tempRect, anImage.CGImage);
+    //CGContextDrawImage(context, tempRect, anImage.CGImage);
+    //CGContextDrawImage(context, newImageRect, anImage.CGImage);
     
     
     //
     // This is where the image is drawn to the origin of the image rect.
     //
-    //UIGraphicsPushContext(context);
+    UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
+    [anImage drawInRect:tempRect];
     //[anImage drawInRect:newImageRect];
-    //UIGraphicsPopContext();
+    UIGraphicsPopContext();
     
     
     CGContextRestoreGState(context);
@@ -326,8 +356,8 @@ static BOOL     hasRunOnce              = NO;
     NSLog(@"\n\n-rectFromImage:inView:");
 	CGRect imageRect;
     
-    self.worldMapView.layer.transform = CATransform3DIdentity;
-    self.worldMapImageView.layer.transform = CATransform3DIdentity;
+    self.imageContainerView.layer.transform = CATransform3DIdentity;
+    self.imageContainerImageView.layer.transform = CATransform3DIdentity;
 	
 	////////////////////////////////////////////////////
 	//
@@ -500,7 +530,7 @@ static BOOL     hasRunOnce              = NO;
     //CGSize screenSize = [[UIScreen mainScreen]bounds].size;
     //CGPoint screenCenter = CGPointMake(screenSize.width / 2.0, screenSize.height / 2.0);
     
-    CGPoint screenCenter = self.worldMapImageView.center;
+    CGPoint screenCenter = self.imageContainerImageView.center;
     
     [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.magnifierView.transform = CGAffineTransformMakeScale(1.05, 1.05);
@@ -649,7 +679,7 @@ static BOOL     hasRunOnce              = NO;
         //
         // Swipe up or down to change the size of the magnifying glass.
         //
-        CGFloat magnifyingGlassResizeIncrement   = [gestureRecognizer translationInView:self.worldMapView].y;
+        CGFloat magnifyingGlassResizeIncrement   = [gestureRecognizer translationInView:self.imageContainerView].y;
         
         
         //

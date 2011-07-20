@@ -248,6 +248,11 @@ static BOOL     hasRunOnce              = NO;
     //
     // Why wouldn't I want to pass-in the actual image size?
     //
+    // Well, I'm not actually passing on the "actual" image size. I'm passing on a scaled image size, because otherwise the image
+    // won't fit into the screen. If I want the actual image, the pre-scaled image at its max zoom, then I need to do two things, 
+    // inverse the scale of the actual image and keep track of where the magnifying glass is relative to the displayed image and the 
+    // magnified image. Yuck!
+    //
     CGSize newImageSize = CGSizeMake(newImageRect.size.width + inset + offset, newImageRect.size.height + inset + offset);
     UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
     
@@ -296,6 +301,8 @@ static BOOL     hasRunOnce              = NO;
     
     //CGContextDrawImage(context, tempRect, anImage.CGImage);
     //CGContextDrawImage(context, newImageRect, anImage.CGImage);
+    
+    [self renderView:self.view inContext:context];
     
     [self renderView:self.imageBoarderView inContext:context];
     NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBoarderView.frame.origin.x, self.imageBoarderView.frame.origin.y, self.imageBoarderView.frame.size.width, self.imageBoarderView.frame.size.height);

@@ -260,22 +260,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">ImageTestingView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="95038665"/>
-					</object>
-					<int key="connectionID">71</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">ImageTestingImageView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="407641295"/>
-					</object>
-					<int key="connectionID">72</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">imageContainerImageView</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="520891859"/>
@@ -292,11 +276,27 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">imageBoarderView</string>
+						<string key="label">imageTestingView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="95038665"/>
+					</object>
+					<int key="connectionID">83</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">imageTestingImageView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="407641295"/>
+					</object>
+					<int key="connectionID">84</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">imageBorderView</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="662664579"/>
 					</object>
-					<int key="connectionID">82</int>
+					<int key="connectionID">85</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -415,7 +415,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">82</int>
+			<int key="maxID">85</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -437,25 +437,17 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="ImageTestingImageView">UIImageView</string>
-						<string key="ImageTestingView">UIView</string>
-						<string key="imageBoarderView">UIView</string>
+						<string key="imageBorderView">UIView</string>
 						<string key="imageContainerImageView">UIImageView</string>
 						<string key="imageContainerView">UIView</string>
+						<string key="imageTestingImageView">UIImageView</string>
+						<string key="imageTestingView">UIView</string>
 						<string key="magnifierLabel">UILabel</string>
 						<string key="magnifierView">UIView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="ImageTestingImageView">
-							<string key="name">ImageTestingImageView</string>
-							<string key="candidateClassName">UIImageView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="ImageTestingView">
-							<string key="name">ImageTestingView</string>
-							<string key="candidateClassName">UIView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="imageBoarderView">
-							<string key="name">imageBoarderView</string>
+						<object class="IBToOneOutletInfo" key="imageBorderView">
+							<string key="name">imageBorderView</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="imageContainerImageView">
@@ -464,6 +456,14 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="imageContainerView">
 							<string key="name">imageContainerView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="imageTestingImageView">
+							<string key="name">imageTestingImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="imageTestingView">
+							<string key="name">imageTestingView</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="magnifierLabel">

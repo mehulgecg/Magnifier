@@ -58,7 +58,7 @@ static BOOL     hasRunOnce              = NO;
 @synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize imageContainerView        = _worldMapView;
-@synthesize imageBoarderView;
+@synthesize imageBorderView;
 @synthesize imageContainerImageView   = _worldMapImageView;
 @synthesize worldMapImage       = _worldMapImage;
 @synthesize worldImageSize      = _worldImageSize;
@@ -77,8 +77,8 @@ static BOOL     hasRunOnce              = NO;
 @synthesize panResizeRecognizer;
 
 @synthesize imagePicker;
-@synthesize ImageTestingView;
-@synthesize ImageTestingImageView;
+@synthesize imageTestingView;
+@synthesize imageTestingImageView;
 
 
 
@@ -142,7 +142,7 @@ static BOOL     hasRunOnce              = NO;
     
     [self setImageTestingView:nil];
     [self setImageTestingImageView:nil];
-    [self setImageBoarderView:nil];
+    [self setImageBorderView:nil];
     [super viewDidUnload];
     
     //self.worldMapImageView = nil;
@@ -202,13 +202,13 @@ static BOOL     hasRunOnce              = NO;
     
     self.imageContainerView.center = self.view.center;
     
-    self.imageBoarderView.center = self.view.center;
-    self.imageBoarderView.frame = CGRectMake(0.0, 
+    self.imageBorderView.center = self.view.center;
+    self.imageBorderView.frame = CGRectMake(0.0, 
                                              0.0, 
                                              newImageRect.size.width + inset + offset, 
                                              newImageRect.size.height + inset + offset);
-    self.imageBoarderView.layer.borderColor = [[UIColor whiteColor] CGColor];
-    self.imageBoarderView.layer.borderWidth = 5.0;
+    self.imageBorderView.layer.borderColor = [[UIColor whiteColor] CGColor];
+    self.imageBorderView.layer.borderWidth = 5.0;
    
     
     //
@@ -313,7 +313,7 @@ static BOOL     hasRunOnce              = NO;
     //[self renderView:self.view inContext:context];
     
     //[self renderView:self.imageBoarderView inContext:context];
-    NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBoarderView.frame.origin.x, self.imageBoarderView.frame.origin.y, self.imageBoarderView.frame.size.width, self.imageBoarderView.frame.size.height);
+    NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBorderView.frame.origin.x, self.imageBorderView.frame.origin.y, self.imageBorderView.frame.size.width, self.imageBorderView.frame.size.height);
     
     
     //
@@ -321,7 +321,7 @@ static BOOL     hasRunOnce              = NO;
     //
     UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-    [anImage drawInRect:CGRectMake(50.0, 50.0, self.imageBoarderView.frame.size.width, self.imageBoarderView.frame.size.height)];
+    [anImage drawInRect:CGRectMake(50.0, 50.0, self.imageBorderView.frame.size.width, self.imageBorderView.frame.size.height)];
     //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
     NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
@@ -349,7 +349,7 @@ static BOOL     hasRunOnce              = NO;
     
     UIGraphicsEndImageContext();
     
-    self.ImageTestingImageView.image = self.worldMapImage;
+    self.imageTestingImageView.image = self.worldMapImage;
 
     
     //

@@ -18,15 +18,15 @@
 {
 	// UIAlertSheet
 	UIActionSheet   *choosePhotoAction;
-    UIView *ImageTestingView;
-    UIImageView *ImageTestingImageView;
-    UIView *imageBoarderView;
+    UIView          *ImageTestingView;
+    UIImageView     *ImageTestingImageView;
+    UIView          *imageBoarderView;
 }
 
 @property (nonatomic, retain)           NSManagedObjectContext      *managedObjectContext;
 
 @property (nonatomic, retain) IBOutlet  UIView          *imageContainerView;
-@property (nonatomic, strong) IBOutlet UIView *imageBoarderView;
+@property (nonatomic, strong) IBOutlet UIView           *imageBoarderView;
 @property (nonatomic, retain) IBOutlet  UIImageView     *imageContainerImageView;
 @property (nonatomic, retain)           UIImage         *worldMapImage;
 @property                               CGSize          worldImageSize;
@@ -45,8 +45,8 @@
 @property (nonatomic, retain)           UIPanGestureRecognizer      *panResizeRecognizer;
 
 @property (nonatomic, retain)           UIImagePickerController     *imagePicker;
-@property (nonatomic, strong) IBOutlet UIView *ImageTestingView;
-@property (nonatomic, strong) IBOutlet UIImageView *ImageTestingImageView;
+@property (nonatomic, strong) IBOutlet UIView                       *ImageTestingView;
+@property (nonatomic, strong) IBOutlet UIImageView                  *ImageTestingImageView;
 
 
 // MagnifyingGlass Public Methods

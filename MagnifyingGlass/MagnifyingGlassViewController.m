@@ -253,7 +253,13 @@ static BOOL     hasRunOnce              = NO;
     // inverse the scale of the actual image and keep track of where the magnifying glass is relative to the displayed image and the 
     // magnified image. Yuck!
     //
-    CGSize newImageSize = CGSizeMake(newImageRect.size.width + inset + offset, newImageRect.size.height + inset + offset);
+    //CGRect screenRect = CGRectMake(-inset * 2.0, -inset * 2.0, newImageRect.size.width + 2.0 * offset, newImageRect.size.height + 2.0 * offset);
+    
+//    CGSize newImageSize = CGSizeMake(newImageRect.size.width + inset + offset, newImageRect.size.height + inset + offset);
+    //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+
+    
+    CGSize newImageSize = CGSizeMake(newImageRect.size.width + 100.0, newImageRect.size.height + 100.0);
     UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
     
     
@@ -263,10 +269,12 @@ static BOOL     hasRunOnce              = NO;
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
-    CGRect tempRect = CGRectMake(inset, inset, newImageRect.size.width, newImageRect.size.height);
+    CGRect tempRect = CGRectMake(inset + 50.0, inset + 50.0, newImageRect.size.width, newImageRect.size.height);
     
     CGContextClearRect(context, tempRect);
     //CGContextClearRect(context, newImageRect);
+    //CGContextClearRect(context, [[UIScreen mainScreen]bounds]);
+    //CGContextClearRect(context, screenRect);
     
     CGContextSaveGState(context);
 
@@ -302,10 +310,21 @@ static BOOL     hasRunOnce              = NO;
     //CGContextDrawImage(context, tempRect, anImage.CGImage);
     //CGContextDrawImage(context, newImageRect, anImage.CGImage);
     
-    [self renderView:self.view inContext:context];
+    //[self renderView:self.view inContext:context];
     
-    [self renderView:self.imageBoarderView inContext:context];
+    //[self renderView:self.imageBoarderView inContext:context];
     NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBoarderView.frame.origin.x, self.imageBoarderView.frame.origin.y, self.imageBoarderView.frame.size.width, self.imageBoarderView.frame.size.height);
+    
+    
+    //
+    // This is where the image border is drawn to the origin of the image rect.
+    //
+    UIGraphicsPushContext(context);
+    //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
+    [anImage drawInRect:CGRectMake(50.0, 50.0, self.imageBoarderView.frame.size.width, self.imageBoarderView.frame.size.height)];
+    //[anImage drawInRect:newImageRect];
+    UIGraphicsPopContext();
+    NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
     
     
     //

@@ -58,7 +58,7 @@ static BOOL     hasRunOnce              = NO;
 @synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize imageContainerView        = _worldMapView;
-@synthesize imageBoardView;
+@synthesize imageBoarderView;
 @synthesize imageContainerImageView   = _worldMapImageView;
 @synthesize worldMapImage       = _worldMapImage;
 @synthesize worldImageSize      = _worldImageSize;
@@ -142,7 +142,7 @@ static BOOL     hasRunOnce              = NO;
     
     [self setImageTestingView:nil];
     [self setImageTestingImageView:nil];
-    [self setImageBoardView:nil];
+    [self setImageBoarderView:nil];
     [super viewDidUnload];
     
     //self.worldMapImageView = nil;
@@ -191,35 +191,36 @@ static BOOL     hasRunOnce              = NO;
     //
     // Resize container view to the diminsions of the resized rect.
     //
-    CGFloat inset   = 10.0;
-    CGFloat offset  = 10.0;
+    CGFloat inset   = 5.0;
+    CGFloat offset  = 5.0;
     self.imageContainerView.center = self.view.center;
     self.imageContainerView.frame = CGRectMake(newImageRect.origin.x, 
                                                newImageRect.origin.y, 
-                                               newImageRect.size.width + 2.0 * offset, 
-                                               newImageRect.size.height + 2.0 * offset);
+                                               newImageRect.size.width + inset + offset, 
+                                               newImageRect.size.height + inset + offset);
     NSLog(@"worldMapView frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
+    
     self.imageContainerView.center = self.view.center;
     
-    self.imageBoardView.center = self.view.center;
-    self.imageBoardView.frame = CGRectMake(inset, 
-                                           inset, 
-                                           newImageRect.size.width + 2.0 * offset, 
-                                           newImageRect.size.height + 2.0 * offset);
-    self.imageBoardView.layer.borderColor = [[UIColor whiteColor] CGColor];
-    self.imageBoardView.layer.borderWidth = 5.0;
+    self.imageBoarderView.center = self.view.center;
+    self.imageBoarderView.frame = CGRectMake(0.0, 
+                                             0.0, 
+                                             newImageRect.size.width + inset + offset, 
+                                             newImageRect.size.height + inset + offset);
+    self.imageBoarderView.layer.borderColor = [[UIColor whiteColor] CGColor];
+    self.imageBoarderView.layer.borderWidth = 5.0;
    
     
     //
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
     self.imageContainerImageView.center = self.imageContainerView.center;
-    self.imageContainerImageView.frame = CGRectMake(1.5 * inset, 
+    self.imageContainerImageView.frame = CGRectMake(inset, 
                                                     inset, 
-                                                    newImageRect.size.width + offset, 
-                                                    newImageRect.size.height + offset);
+                                                    newImageRect.size.width, 
+                                                    newImageRect.size.height);
     NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
-    NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
+    //NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
     
     
     self.imageContainerImageView.layer.minificationFilter = kCAFilterTrilinear;
@@ -247,7 +248,7 @@ static BOOL     hasRunOnce              = NO;
     //
     // Why wouldn't I want to pass-in the actual image size?
     //
-    CGSize newImageSize = CGSizeMake(newImageRect.size.width + 4.0 * offset, newImageRect.size.height + 4.0 * offset);
+    CGSize newImageSize = CGSizeMake(newImageRect.size.width + inset + offset, newImageRect.size.height + inset + offset);
     UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
     
     
@@ -257,7 +258,7 @@ static BOOL     hasRunOnce              = NO;
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
-    CGRect tempRect = CGRectMake(2.0 * inset, 2.0 * inset, newImageRect.size.width, newImageRect.size.height);
+    CGRect tempRect = CGRectMake(inset, inset, newImageRect.size.width, newImageRect.size.height);
     
     CGContextClearRect(context, tempRect);
     //CGContextClearRect(context, newImageRect);
@@ -296,6 +297,9 @@ static BOOL     hasRunOnce              = NO;
     //CGContextDrawImage(context, tempRect, anImage.CGImage);
     //CGContextDrawImage(context, newImageRect, anImage.CGImage);
     
+    [self renderView:self.imageBoarderView inContext:context];
+    NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBoarderView.frame.origin.x, self.imageBoarderView.frame.origin.y, self.imageBoarderView.frame.size.width, self.imageBoarderView.frame.size.height);
+    
     
     //
     // This is where the image is drawn to the origin of the image rect.
@@ -305,6 +309,7 @@ static BOOL     hasRunOnce              = NO;
     [anImage drawInRect:tempRect];
     //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
+    NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
     
     
     CGContextRestoreGState(context);

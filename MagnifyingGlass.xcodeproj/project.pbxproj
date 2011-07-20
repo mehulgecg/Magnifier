@@ -34,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E609544513ACACC4007D910A /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		E695C8F813A402C400E8613C /* UIImage+ScaleRotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ScaleRotate.h"; sourceTree = "<group>"; };
 		E695C8F913A402C500E8613C /* UIImage+ScaleRotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ScaleRotate.m"; sourceTree = "<group>"; };
 		E6B368B313A19A18008FE4B8 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
@@ -111,6 +112,7 @@
 				E6BD64A0138B87A700E8BFB2 /* Foundation.framework */,
 				E6BD64A2138B87A700E8BFB2 /* CoreGraphics.framework */,
 				E6BD64A4138B87A700E8BFB2 /* CoreData.framework */,
+				E609544513ACACC4007D910A /* CoreImage.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

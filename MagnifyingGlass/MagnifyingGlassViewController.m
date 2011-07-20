@@ -191,13 +191,13 @@ static BOOL     hasRunOnce              = NO;
     //
     // Resize container view to the diminsions of the resized rect.
     //
-    CGFloat inset = 10.0;
-    CGFloat offset = 10.0;
+    CGFloat inset   = 10.0;
+    CGFloat offset  = 10.0;
     self.imageContainerView.center = self.view.center;
     self.imageContainerView.frame = CGRectMake(newImageRect.origin.x, 
                                                newImageRect.origin.y, 
-                                               newImageRect.size.width + 4.0 * offset, 
-                                               newImageRect.size.height + 4.0 * offset);
+                                               newImageRect.size.width + 2.0 * offset, 
+                                               newImageRect.size.height + 2.0 * offset);
     NSLog(@"worldMapView frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
     self.imageContainerView.center = self.view.center;
     
@@ -214,10 +214,10 @@ static BOOL     hasRunOnce              = NO;
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
     self.imageContainerImageView.center = self.imageContainerView.center;
-    self.imageContainerImageView.frame = CGRectMake(2.0 * inset, 
-                                                    2.0 * inset, 
-                                                    newImageRect.size.width, 
-                                                    newImageRect.size.height);
+    self.imageContainerImageView.frame = CGRectMake(1.5 * inset, 
+                                                    inset, 
+                                                    newImageRect.size.width + offset, 
+                                                    newImageRect.size.height + offset);
     NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
     NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
     

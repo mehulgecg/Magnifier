@@ -55,13 +55,13 @@ static BOOL     hasRunOnce              = NO;
 
 
 
-@synthesize managedObjectContext = _managedObjectContext;
+@synthesize managedObjectContext    = _managedObjectContext;
 
-@synthesize imageContainerView        = _worldMapView;
+@synthesize imageContainerView      = _worldMapView;
 @synthesize imageBorderView;
-@synthesize imageContainerImageView   = _worldMapImageView;
-@synthesize worldMapImage       = _worldMapImage;
-@synthesize worldImageSize      = _worldImageSize;
+@synthesize imageContainerImageView = _worldMapImageView;
+@synthesize worldMapImage           = _worldMapImage;
+@synthesize worldImageSize          = _worldImageSize;
 
 @synthesize xScale;
 @synthesize yScale;
@@ -260,6 +260,7 @@ static BOOL     hasRunOnce              = NO;
 
     
     CGSize newImageSize = CGSizeMake(newImageRect.size.width + 100.0, newImageRect.size.height + 100.0);
+    CGRect newImageSizeRect = CGRectMake(-100.0, -100.0, newImageSize.width + 100.0, newImageSize.height + 100.0);
     UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
     
     
@@ -271,10 +272,11 @@ static BOOL     hasRunOnce              = NO;
     //CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
     CGRect tempRect = CGRectMake(inset + 50.0, inset + 50.0, newImageRect.size.width, newImageRect.size.height);
     
-    CGContextClearRect(context, tempRect);
+    //CGContextClearRect(context, tempRect);
     //CGContextClearRect(context, newImageRect);
     //CGContextClearRect(context, [[UIScreen mainScreen]bounds]);
     //CGContextClearRect(context, screenRect);
+    CGContextClearRect(context, newImageSizeRect);
     
     CGContextSaveGState(context);
 
@@ -313,18 +315,17 @@ static BOOL     hasRunOnce              = NO;
     //[self renderView:self.view inContext:context];
     
     //[self renderView:self.imageBoarderView inContext:context];
-    NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBorderView.frame.origin.x, self.imageBorderView.frame.origin.y, self.imageBorderView.frame.size.width, self.imageBorderView.frame.size.height);
+    //NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBorderView.frame.origin.x, self.imageBorderView.frame.origin.y, self.imageBorderView.frame.size.width, self.imageBorderView.frame.size.height);
     
     
     //
     // This is where the image border is drawn to the origin of the image rect.
     //
-    UIGraphicsPushContext(context);
-    //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-    [anImage drawInRect:CGRectMake(50.0, 50.0, self.imageBorderView.frame.size.width, self.imageBorderView.frame.size.height)];
-    //[anImage drawInRect:newImageRect];
-    UIGraphicsPopContext();
-    NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
+//    UIImage *borderViewImage = [[UIImage alloc] init];
+//    UIGraphicsPushContext(context);
+//    [anImage drawInRect:CGRectMake(50.0, 50.0, self.imageBorderView.frame.size.width + 50.0, self.imageBorderView.frame.size.height + 50.0)];
+//    UIGraphicsPopContext();
+//    NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
     
     
     //
@@ -332,7 +333,7 @@ static BOOL     hasRunOnce              = NO;
     //
     UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-    [anImage drawInRect:tempRect];
+    [anImage drawInRect:CGRectMake(-50.0, -50.0, newImageSize.width, newImageSize.height)];
     //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
     NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
@@ -455,7 +456,7 @@ static BOOL     hasRunOnce              = NO;
 
 
 #pragma mark -
-#pragma mark Methods for OpenGL & UIKView Screenshots based on Q&A 1702, Q&A 1703, Q&A 1704, & Q&A 1714
+#pragma mark Methods for Rendering a View in a Context
 
 - (void)renderView:(UIView*)view inContext:(CGContextRef)context
 {

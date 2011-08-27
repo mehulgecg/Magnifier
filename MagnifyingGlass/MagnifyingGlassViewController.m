@@ -215,10 +215,10 @@ static BOOL     hasRunOnce              = NO;
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
     self.imageContainerImageView.center = self.imageContainerView.center;
-    self.imageContainerImageView.frame = CGRectMake(inset, 
-                                                    inset, 
-                                                    newImageRect.size.width, 
-                                                    newImageRect.size.height);
+    self.imageContainerImageView.frame = CGRectMake(newImageRect.size.width / 4.0, 
+                                                    newImageRect.size.height / 4.0, 
+                                                    newImageRect.size.width * 0.5, 
+                                                    newImageRect.size.height * 0.5);
     NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
     //NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
     
@@ -259,8 +259,9 @@ static BOOL     hasRunOnce              = NO;
     //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
 
     
-    CGSize newImageSize = CGSizeMake(newImageRect.size.width + 100.0, newImageRect.size.height + 100.0);
-    CGRect newImageSizeRect = CGRectMake(-100.0, -100.0, newImageSize.width + 100.0, newImageSize.height + 100.0);
+    CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
+    //CGRect newImageSizeRect = CGRectMake(-100.0, -100.0, newImageSize.width + 100.0, newImageSize.height + 100.0);
+    CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
     UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
     
     
@@ -270,21 +271,21 @@ static BOOL     hasRunOnce              = NO;
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
-    CGRect tempRect = CGRectMake(inset + 50.0, inset + 50.0, newImageRect.size.width, newImageRect.size.height);
+    //CGRect tempRect = CGRectMake(inset + 50.0, inset + 50.0, newImageRect.size.width, newImageRect.size.height);
     
     //CGContextClearRect(context, tempRect);
     //CGContextClearRect(context, newImageRect);
     //CGContextClearRect(context, [[UIScreen mainScreen]bounds]);
     //CGContextClearRect(context, screenRect);
-    CGContextClearRect(context, newImageSizeRect);
+    //CGContextClearRect(context, newImageSizeRect);
     
     CGContextSaveGState(context);
 
 
     //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
-    //CGContextTranslateCTM(context, newImageSize.width / 2.0, newImageSize.height / 2.0);
-    //CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextScaleCTM(context, 0.5, 0.5);
+    CGContextTranslateCTM(context, newImageSize.width * 0.5, newImageSize.height * 0.5);
     //CGContextTranslateCTM(context, -newImageSize.width / 2.0, -newImageSize.height / 2.0);
     
     
@@ -308,6 +309,8 @@ static BOOL     hasRunOnce              = NO;
                           -[self.worldMapView bounds].size.height * [[self.worldMapView layer] anchorPoint].y);
     
     */
+    
+    //CGContextRestoreGState(context);
     
     //CGContextDrawImage(context, tempRect, anImage.CGImage);
     //CGContextDrawImage(context, newImageRect, anImage.CGImage);
@@ -333,10 +336,11 @@ static BOOL     hasRunOnce              = NO;
     //
     UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-    [anImage drawInRect:CGRectMake(-50.0, -50.0, newImageSize.width, newImageSize.height)];
+    //[anImage drawInRect:CGRectMake(-50.0, -50.0, newImageSize.width + 100.0, newImageSize.height + 100.0)];
+    [anImage drawInRect:CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height)];
     //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
-    NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
+    //NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
     
     
     CGContextRestoreGState(context);

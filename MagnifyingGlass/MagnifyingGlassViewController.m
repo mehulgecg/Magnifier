@@ -95,10 +95,7 @@ static BOOL     hasRunOnce              = NO;
     //
     [self createGestureRecognizers];
     
-    
-    self.view.center = CGPointMake(160.0, 100.0);
-    
-    
+        
     //
     // Set the main background image conditioned on this being a first run.
     //
@@ -133,13 +130,15 @@ static BOOL     hasRunOnce              = NO;
     [self.magnifier createMagnifyingGlassWithFrame:[[UIScreen mainScreen] bounds]];
     
     self.magnifier.magnifyingGlassView  =  self.magnifierView;
-    self.magnifier.magnifyingGlassView.center = self.imageContainerView.center;
+    self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
     self.magnifier.magnifyingGlassLabel = self.magnifierLabel;
     self.magnifier.magnifyingGlassImage = self.magnifiedImage;
     self.magnifierLabel.alpha = 0.0;
     self.magnifierView.backgroundColor = [UIColor clearColor];
     
     [self.magnifier updateMagnifyingGlass];
+    
+    //self.magnifierView.center = self.view.center;
 }
 
 
@@ -202,8 +201,10 @@ static BOOL     hasRunOnce              = NO;
     CGFloat inset   = 5.0;
     CGFloat offset  = 5.0;
     
-    self.imageContainerView.center = self.view.center;
-    
+
+    //
+    // Set-up the view and image view hierarchy of the image being brought in.
+    //
     self.imageContainerView.frame = CGRectMake(newImageRect.origin.x, 
                                                newImageRect.origin.y, 
                                                newImageRect.size.width * 2.0, 
@@ -214,6 +215,9 @@ static BOOL     hasRunOnce              = NO;
     self.imageContainerView.backgroundColor = [UIColor yellowColor];
     
     
+    //
+    // This gives a nice white border around the image
+    //
     self.imageBorderView.frame = CGRectMake(0.0, 
                                              0.0, 
                                              newImageRect.size.width + inset + offset, 
@@ -227,21 +231,18 @@ static BOOL     hasRunOnce              = NO;
     //
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
-<<<<<<< HEAD
     self.imageContainerImageView.center = self.imageContainerView.center;
     self.imageContainerImageView.frame = CGRectMake(newImageRect.size.width / 4.0, 
                                                     newImageRect.size.height / 4.0, 
                                                     newImageRect.size.width * 0.5, 
                                                     newImageRect.size.height * 0.5);
     NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
-=======
     self.imageContainerImageView.frame = CGRectMake(inset, 
                                                     inset, 
                                                     newImageRect.size.width, 
                                                     newImageRect.size.height);
     NSLog(@"imageContainerImageView.frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
->>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
-    //NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
+
 
     //self.imageContainerImageView.center = self.imageContainerView.center;
     self.imageContainerImageView.center = CGPointMake(self.imageContainerView.frame.size.width / 2.0, self.imageContainerView.frame.size.height / 2.0);
@@ -283,15 +284,16 @@ static BOOL     hasRunOnce              = NO;
 
     
     CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
-<<<<<<< HEAD
+
     //CGRect newImageSizeRect = CGRectMake(-100.0, -100.0, newImageSize.width + 100.0, newImageSize.height + 100.0);
     CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
-    UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
-=======
+    //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+
+
     CGSize contextSize  = CGSizeMake(newImageSize.width * 2.0, newImageSize.height * 2.0);
-    CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
+    CGRect contextRect  = CGRectMake(0.0, 0.0, contextSize.width, contextSize.height);
+    //CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
     UIGraphicsBeginImageContextWithOptions(contextSize, NO, 0);
->>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
     
     
     //UIGraphicsBeginImageContextWithOptions([[UIScreen mainScreen] bounds].size, NO, 0);
@@ -308,19 +310,49 @@ static BOOL     hasRunOnce              = NO;
     //CGContextClearRect(context, screenRect);
     //CGContextClearRect(context, newImageSizeRect);
     
+    
+    
+    //
+    // Going to give the context a background fill before adding the image.
+    //
+    CGContextAddRect(context, contextRect);
+    CGContextSetFillColorWithColor(context, [[UIColor yellowColor] CGColor]);
+    CGContextFillRect(context, contextRect);
+    
+    
     CGContextSaveGState(context);
 
 
     CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
-<<<<<<< HEAD
-    CGContextScaleCTM(context, 0.5, 0.5);
-    CGContextTranslateCTM(context, newImageSize.width * 0.5, newImageSize.height * 0.5);
-=======
+    //CGContextScaleCTM(context, 0.5, 0.5);
+    //CGContextTranslateCTM(context, newImageSize.width * 0.5, newImageSize.height * 0.5);
     CGContextTranslateCTM(context, contextSize.width / 4.0, contextSize.height / 4.0);
     //CGContextScaleCTM(context, 1.0, -1.0);
->>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
-    //CGContextTranslateCTM(context, -newImageSize.width / 2.0, -newImageSize.height / 2.0);
+
+    
+    
+    CGContextAddRect(context, newImageSizeRect);
+    CGContextSetFillColorWithColor(context, [[UIColor blueColor] CGColor]);
+    CGContextFillPath(context);
+    
+    
+    //
+    // Draw white border
+    //
+    UIBezierPath *borderPath = [UIBezierPath bezierPath];
+    CGPoint startPoint = CGPointMake(-2.5, -2.5);
+    [borderPath moveToPoint:startPoint];
+    CGPoint nextPoint1 = CGPointMake(newImageSize.width + 2.5, -2.5);
+    [borderPath addLineToPoint:nextPoint1];
+    CGPoint nextPoint2 = CGPointMake(newImageSize.width + 2.5, newImageSize.height + 2.5);
+    [borderPath addLineToPoint:nextPoint2];
+    CGPoint nextPoint3 = CGPointMake(-2.5, newImageSize.height + 2.5);
+    [borderPath addLineToPoint:nextPoint3];
+    [borderPath setLineWidth:5.0];
+    [borderPath closePath];
+    [[UIColor whiteColor] setStroke];
+    [borderPath stroke];
     
     
 //    CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y / 1.0);
@@ -354,26 +386,12 @@ static BOOL     hasRunOnce              = NO;
     //[self renderView:self.imageBoarderView inContext:context];
     //NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBorderView.frame.origin.x, self.imageBorderView.frame.origin.y, self.imageBorderView.frame.size.width, self.imageBorderView.frame.size.height);
     
-    
-    //
-    // This is where the image border is drawn to the origin of the image rect.
-    //
-//    UIImage *borderViewImage = [[UIImage alloc] init];
-//    UIGraphicsPushContext(context);
-//    [anImage drawInRect:CGRectMake(50.0, 50.0, self.imageBorderView.frame.size.width + 50.0, self.imageBorderView.frame.size.height + 50.0)];
-//    UIGraphicsPopContext();
-//    NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
-    
-    
     //
     // This is where the image is drawn to the origin of the image rect.
     //
     UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-<<<<<<< HEAD
     //[anImage drawInRect:CGRectMake(-50.0, -50.0, newImageSize.width + 100.0, newImageSize.height + 100.0)];
-=======
->>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
     [anImage drawInRect:CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height)];
     //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();

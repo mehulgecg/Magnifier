@@ -57,11 +57,11 @@ static BOOL     hasRunOnce              = NO;
 
 @synthesize managedObjectContext    = _managedObjectContext;
 
-@synthesize imageContainerView      = _worldMapView;
+@synthesize imageContainerView      = _imageContainerView;
 @synthesize imageBorderView;
-@synthesize imageContainerImageView = _worldMapImageView;
-@synthesize worldMapImage           = _worldMapImage;
-@synthesize worldImageSize          = _worldImageSize;
+@synthesize imageContainerImageView = _imageContainerImageView;
+@synthesize magnifiedImage          = _magnifiedImage;
+@synthesize magnifiedImageSize      = _magnifiedImageSize;
 
 @synthesize xScale;
 @synthesize yScale;
@@ -96,15 +96,20 @@ static BOOL     hasRunOnce              = NO;
     [self createGestureRecognizers];
     
     
+    self.view.center = CGPointMake(160.0, 100.0);
+    
+    
     //
     // Set the main background image conditioned on this being a first run.
     //
     if (!hasRunOnce) 
     {
-        self.worldMapImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"iPhone4"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
+        self.magnifiedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"iPhone4"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
     }
     
     hasRunOnce = YES;
+    
+    NSLog(@"self.view.center = %f, %f", self.view.center.x, self.view.center.y);
 }
 
 
@@ -114,7 +119,9 @@ static BOOL     hasRunOnce              = NO;
     NSLog(@"\n\n-viewDidAppear\n\n");
     [super viewDidAppear:animated];
     
-    [self setNewImage:self.worldMapImage inImageView:self.imageContainerImageView];
+    [self setNewImage:self.magnifiedImage inImageView:self.imageContainerImageView];
+    
+    self.imageContainerView.center = CGPointMake(160.0, 230.0);
  
     //NSLog(@"image orientation = %u", self.worldMapImage.imageOrientation);
     
@@ -125,9 +132,10 @@ static BOOL     hasRunOnce              = NO;
     
     [self.magnifier createMagnifyingGlassWithFrame:[[UIScreen mainScreen] bounds]];
     
-    self.magnifier.magnifyingGlassView =  self.magnifierView;
+    self.magnifier.magnifyingGlassView  =  self.magnifierView;
+    self.magnifier.magnifyingGlassView.center = self.imageContainerView.center;
     self.magnifier.magnifyingGlassLabel = self.magnifierLabel;
-    self.magnifier.magnifyingGlassImage = self.worldMapImage;
+    self.magnifier.magnifyingGlassImage = self.magnifiedImage;
     self.magnifierLabel.alpha = 0.0;
     self.magnifierView.backgroundColor = [UIColor clearColor];
     
@@ -193,35 +201,50 @@ static BOOL     hasRunOnce              = NO;
     //
     CGFloat inset   = 5.0;
     CGFloat offset  = 5.0;
+    
     self.imageContainerView.center = self.view.center;
+    
     self.imageContainerView.frame = CGRectMake(newImageRect.origin.x, 
                                                newImageRect.origin.y, 
-                                               newImageRect.size.width + inset + offset, 
-                                               newImageRect.size.height + inset + offset);
-    NSLog(@"worldMapView frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
+                                               newImageRect.size.width * 2.0, 
+                                               newImageRect.size.height * 2.0);
+    NSLog(@"imageContainerView.frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
     
     self.imageContainerView.center = self.view.center;
+    self.imageContainerView.backgroundColor = [UIColor yellowColor];
     
-    self.imageBorderView.center = self.view.center;
+    
     self.imageBorderView.frame = CGRectMake(0.0, 
                                              0.0, 
                                              newImageRect.size.width + inset + offset, 
                                              newImageRect.size.height + inset + offset);
-    self.imageBorderView.layer.borderColor = [[UIColor whiteColor] CGColor];
-    self.imageBorderView.layer.borderWidth = 5.0;
-   
+    self.imageBorderView.layer.borderColor  = [[UIColor whiteColor] CGColor];
+    self.imageBorderView.layer.borderWidth  = 5.0;
+    self.imageBorderView.backgroundColor    = [UIColor blueColor];
+
+    self.imageBorderView.center = CGPointMake(self.imageContainerView.frame.size.width / 2.0, self.imageContainerView.frame.size.height / 2.0);
     
     //
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
+<<<<<<< HEAD
     self.imageContainerImageView.center = self.imageContainerView.center;
     self.imageContainerImageView.frame = CGRectMake(newImageRect.size.width / 4.0, 
                                                     newImageRect.size.height / 4.0, 
                                                     newImageRect.size.width * 0.5, 
                                                     newImageRect.size.height * 0.5);
     NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
+=======
+    self.imageContainerImageView.frame = CGRectMake(inset, 
+                                                    inset, 
+                                                    newImageRect.size.width, 
+                                                    newImageRect.size.height);
+    NSLog(@"imageContainerImageView.frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
+>>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
     //NSLog(@"worldImage size = %f, %f,", self.worldMapImage.size.width, self.worldMapImage.size.height);
-    
+
+    //self.imageContainerImageView.center = self.imageContainerView.center;
+    self.imageContainerImageView.center = CGPointMake(self.imageContainerView.frame.size.width / 2.0, self.imageContainerView.frame.size.height / 2.0);
     
     self.imageContainerImageView.layer.minificationFilter = kCAFilterTrilinear;
 	self.imageContainerImageView.layer.minificationFilterBias = 0;
@@ -260,9 +283,15 @@ static BOOL     hasRunOnce              = NO;
 
     
     CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
+<<<<<<< HEAD
     //CGRect newImageSizeRect = CGRectMake(-100.0, -100.0, newImageSize.width + 100.0, newImageSize.height + 100.0);
     CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
     UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
+=======
+    CGSize contextSize  = CGSizeMake(newImageSize.width * 2.0, newImageSize.height * 2.0);
+    CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
+    UIGraphicsBeginImageContextWithOptions(contextSize, NO, 0);
+>>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
     
     
     //UIGraphicsBeginImageContextWithOptions([[UIScreen mainScreen] bounds].size, NO, 0);
@@ -282,10 +311,15 @@ static BOOL     hasRunOnce              = NO;
     CGContextSaveGState(context);
 
 
-    //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
+    CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
+<<<<<<< HEAD
     CGContextScaleCTM(context, 0.5, 0.5);
     CGContextTranslateCTM(context, newImageSize.width * 0.5, newImageSize.height * 0.5);
+=======
+    CGContextTranslateCTM(context, contextSize.width / 4.0, contextSize.height / 4.0);
+    //CGContextScaleCTM(context, 1.0, -1.0);
+>>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
     //CGContextTranslateCTM(context, -newImageSize.width / 2.0, -newImageSize.height / 2.0);
     
     
@@ -336,7 +370,10 @@ static BOOL     hasRunOnce              = NO;
     //
     UIGraphicsPushContext(context);
     //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
+<<<<<<< HEAD
     //[anImage drawInRect:CGRectMake(-50.0, -50.0, newImageSize.width + 100.0, newImageSize.height + 100.0)];
+=======
+>>>>>>> First time magnifiedImage isn't distorted. Will work more on this. Key was imageContainerView and contextSize dimensions. These need to match in w/h.
     [anImage drawInRect:CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height)];
     //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
@@ -349,12 +386,12 @@ static BOOL     hasRunOnce              = NO;
     //
     // Retrieve the screenshot image containing both the camera content and the overlay view
     //
-    self.worldMapImage = UIGraphicsGetImageFromCurrentImageContext();
-    NSLog(@"final image size = %f, %f", self.worldMapImage.size.width, self.worldMapImage.size.height);
+    self.magnifiedImage = UIGraphicsGetImageFromCurrentImageContext();
+    NSLog(@"final image size = %f, %f", self.magnifiedImage.size.width, self.magnifiedImage.size.height);
     
     UIGraphicsEndImageContext();
     
-    self.imageTestingImageView.image = self.worldMapImage;
+    //self.imageTestingImageView.image = self.worldMapImage;
 
     
     //
@@ -1007,11 +1044,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     NSLog(@"image orientation = %u", newImage.imageOrientation);
     NSLog(@"newImage size = %f, %f", newImage.size.width, newImage.size.height);
 	
-    self.worldMapImage = newImage;
-
+    self.magnifiedImage = newImage;
+    
     //[self setNewImage:self.worldMapImage inImageView:self.worldMapImageView];
 	
-
+    
 	[[picker parentViewController] dismissModalViewControllerAnimated:YES];	
 	
 	

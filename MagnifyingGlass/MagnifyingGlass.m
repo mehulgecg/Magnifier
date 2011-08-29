@@ -55,7 +55,8 @@
 - (id)init
 {
     self = [super init];
-    if (self) {
+    if (self) 
+    {
         // Initialization code
     }
     return self;
@@ -103,6 +104,8 @@
     //{
     //NSLog(@"\n\n\n\n\n Resizing the magnifying glass");
     //NSLog(@"magnifying glass initial diameter = %f", self.magnifyingGlassDiameter);
+    
+    
     //
     // Change the magnifying glass diameter while checking to ensure it doesn't exceed min or max dimensions
     //
@@ -192,10 +195,10 @@
     CGFloat screenScale = [[UIScreen mainScreen] scale];
     
     
-    newMagnifyingGlassOrigin.x *= screenScale;
-    newMagnifyingGlassOrigin.y *= screenScale;
-    newMagnifyingGlassSize.width *= screenScale;
-    newMagnifyingGlassSize.height *= screenScale;
+    newMagnifyingGlassOrigin.x      *= screenScale;
+    newMagnifyingGlassOrigin.y      *= screenScale;
+    newMagnifyingGlassSize.width    *= screenScale;
+    newMagnifyingGlassSize.height   *= screenScale;
     
     
     CGRect magnifiedImageFrame = CGRectMake( newMagnifyingGlassOrigin.x, newMagnifyingGlassOrigin.y, newMagnifyingGlassSize.width, newMagnifyingGlassSize.height );

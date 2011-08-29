@@ -28,8 +28,8 @@
 @property (nonatomic, retain) IBOutlet  UIView          *imageContainerView;
 @property (nonatomic, strong) IBOutlet UIView           *imageBorderView;
 @property (nonatomic, retain) IBOutlet  UIImageView     *imageContainerImageView;
-@property (nonatomic, retain)           UIImage         *worldMapImage;
-@property                               CGSize          worldImageSize;
+@property (nonatomic, retain)           UIImage         *magnifiedImage;
+@property                               CGSize          magnifiedImageSize;
 
 @property                               CGFloat         xScale;
 @property                               CGFloat         yScale;

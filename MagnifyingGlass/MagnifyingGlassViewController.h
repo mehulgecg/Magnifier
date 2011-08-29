@@ -16,6 +16,8 @@
 
 @interface MagnifyingGlassViewController : UIViewController <InfoViewControllerDelegate, UIGestureRecognizerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate> 
 {
+    BOOL            pictureChosen;
+    
 	// UIAlertSheet
 	UIActionSheet   *choosePhotoAction;
     UIView          *imageTestingView;

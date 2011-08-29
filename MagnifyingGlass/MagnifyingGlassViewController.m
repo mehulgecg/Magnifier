@@ -94,7 +94,12 @@ static BOOL     hasRunOnce              = NO;
     // Create the Gesture Recognizers
     //
     [self createGestureRecognizers];
-    
+ 
+    self.view.center                    = CGPointMake(160.0, 230.0);
+    self.imageContainerView.center      = CGPointMake(160.0, 230.0);
+    self.imageBorderView.center         = self.imageContainerView.center; 
+    self.imageContainerImageView.center = self.imageContainerView.center;
+
         
     //
     // Set the main background image conditioned on this being a first run.
@@ -102,11 +107,34 @@ static BOOL     hasRunOnce              = NO;
     if (!hasRunOnce) 
     {
         self.magnifiedImage = [UIImage imageWithCGImage:[UIImage imageNamed:@"iPhone4"].CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
-    }
+        
+        
+        pictureChosen = YES;
+        
+        
+        //
+        //Create the magnifying glass object and set its values
+        //
+        self.magnifier = [[MagnifyingGlass alloc] init];
+        
+        [self.magnifier createMagnifyingGlassWithFrame:[[UIScreen mainScreen] bounds]];
+        
+        self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
+
+/* 
+        self.magnifier.magnifyingGlassView  =  self.magnifierView;
+        self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
+        self.magnifier.magnifyingGlassLabel = self.magnifierLabel;
+        self.magnifier.magnifyingGlassImage = self.magnifiedImage;
+        self.magnifierLabel.alpha = 0.0;
+        self.magnifierView.backgroundColor = [UIColor clearColor];
+*/
+ }
     
     hasRunOnce = YES;
     
     NSLog(@"self.view.center = %f, %f", self.view.center.x, self.view.center.y);
+    NSLog(@"self.imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
 }
 
 
@@ -115,30 +143,29 @@ static BOOL     hasRunOnce              = NO;
 {
     NSLog(@"\n\n-viewDidAppear\n\n");
     [super viewDidAppear:animated];
+     
+    self.view.center                = CGPointMake(160.0, 230.0);
+    self.imageContainerView.center  = CGPointMake(160.0, 230.0);
     
-    [self setNewImage:self.magnifiedImage inImageView:self.imageContainerImageView];
+    NSLog(@"self.view.center = %f, %f", self.view.center.x, self.view.center.y);
+    NSLog(@"self.imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
     
-    self.imageContainerView.center = CGPointMake(160.0, 230.0);
+    if (pictureChosen) 
+    {
+        [self setNewImage:self.magnifiedImage inImageView:self.imageContainerImageView];
+        self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
+    }
  
     //NSLog(@"image orientation = %u", self.worldMapImage.imageOrientation);
     
-    //
-    //Create the magnifying glass object and set its values
-    //
-    self.magnifier = [[MagnifyingGlass alloc] init];
-    
-    [self.magnifier createMagnifyingGlassWithFrame:[[UIScreen mainScreen] bounds]];
     
     self.magnifier.magnifyingGlassView  =  self.magnifierView;
-    self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
     self.magnifier.magnifyingGlassLabel = self.magnifierLabel;
     self.magnifier.magnifyingGlassImage = self.magnifiedImage;
     self.magnifierLabel.alpha = 0.0;
     self.magnifierView.backgroundColor = [UIColor clearColor];
     
     [self.magnifier updateMagnifyingGlass];
-    
-    //self.magnifierView.center = self.view.center;
 }
 
 
@@ -151,9 +178,6 @@ static BOOL     hasRunOnce              = NO;
     [self setImageTestingImageView:nil];
     [self setImageBorderView:nil];
     [super viewDidUnload];
-    
-    //self.worldMapImageView = nil;
-    //self.worldMapImageView.image = nil;
 }
 
 
@@ -910,7 +934,7 @@ static BOOL     hasRunOnce              = NO;
 {
 	if (choosePhotoAction) 
 	{
-		NSLog(@"Choosing a new background.");
+		NSLog(@"Choosing a new image.");
 		/*
          if (buttonIndex == 0) 
          {
@@ -1038,6 +1062,8 @@ static BOOL     hasRunOnce              = NO;
 didFinishPickingMediaWithInfo:(NSDictionary *)info 
 {
 	NSLog(@"\n\n-imagePickerController:didFinishPickingMediaWithInfo:");
+    
+    pictureChosen = YES;
 	
 	// If the camera exists, use it. Otherwise, use the images already available on the device
 	UIImage *originalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
@@ -1062,10 +1088,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     NSLog(@"image orientation = %u", newImage.imageOrientation);
     NSLog(@"newImage size = %f, %f", newImage.size.width, newImage.size.height);
 	
-    self.magnifiedImage = newImage;
-    
-    //[self setNewImage:self.worldMapImage inImageView:self.worldMapImageView];
-	
+    //self.magnifiedImage = newImage;
+    self.magnifiedImage = [UIImage imageWithCGImage:newImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:newImage.imageOrientation];
     
 	[[picker parentViewController] dismissModalViewControllerAnimated:YES];	
 	
@@ -1079,6 +1103,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker 
 {
 	NSLog(@"-imagePickerControllerDidCancel:");
+    
+    pictureChosen = NO;
 	
     [[picker parentViewController] dismissModalViewControllerAnimated:YES];
 	

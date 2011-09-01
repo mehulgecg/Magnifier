@@ -223,7 +223,7 @@ static BOOL     hasRunOnce              = NO;
                                                newImageRect.size.width * 2.0, 
                                                newImageRect.size.height * 2.0);
     self.imageContainerView.center = CGPointMake(160.0, 230.0);
-    self.imageContainerView.backgroundColor = [UIColor yellowColor];
+    //self.imageContainerView.backgroundColor = [UIColor yellowColor];
     
     NSLog(@"imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
     NSLog(@"imageContainerView.frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
@@ -240,7 +240,7 @@ static BOOL     hasRunOnce              = NO;
                                                           self.imageContainerView.frame.size.height / 2.0);
     self.imageBorderView.layer.borderColor  = [[UIColor whiteColor] CGColor];
     self.imageBorderView.layer.borderWidth  = 5.0;
-    self.imageBorderView.backgroundColor    = [UIColor blueColor];
+    //self.imageBorderView.backgroundColor    = [UIColor blueColor];
     
     
     

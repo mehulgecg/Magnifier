@@ -247,25 +247,16 @@ static BOOL     hasRunOnce              = NO;
     //
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
-//    self.imageContainerImageView.center = self.imageContainerView.center;
-//    self.imageContainerImageView.frame = CGRectMake(newImageRect.size.width / 4.0, 
-//                                                    newImageRect.size.height / 4.0, 
-//                                                    newImageRect.size.width * 0.5, 
-//                                                    newImageRect.size.height * 0.5);
-//    NSLog(@"imageContainerImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
     self.imageContainerImageView.frame = CGRectMake(inset, 
                                                     inset, 
                                                     newImageRect.size.width, 
                                                     newImageRect.size.height);
-    NSLog(@"imageContainerImageView.frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
-
-
-    //self.imageContainerImageView.center = self.imageContainerView.center;
     self.imageContainerImageView.center                     = CGPointMake(self.imageContainerView.frame.size.width / 2.0, 
                                                                           self.imageContainerView.frame.size.height / 2.0);
     self.imageContainerImageView.layer.minificationFilter   = kCAFilterTrilinear;
 	self.imageContainerImageView.layer.minificationFilterBias = 0;
-
+    NSLog(@"imageContainerImageView.frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
+    
     
     //
     // Now set the scaled image into the image view
@@ -278,8 +269,6 @@ static BOOL     hasRunOnce              = NO;
     self.imageContainerImageView.image = tempImage;
     self.imageContainerImageView.alpha = 0.5;
 
-    //self.worldMapImageView.image = [UIImage imageWithCGImage:self.worldMapImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:UIImageOrientationUp];
-    
 
     // 
     // Now set-up the image for the magnifying glass.

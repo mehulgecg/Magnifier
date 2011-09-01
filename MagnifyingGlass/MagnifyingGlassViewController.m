@@ -96,9 +96,8 @@ static BOOL     hasRunOnce              = NO;
     [self createGestureRecognizers];
  
     self.view.center                    = CGPointMake(160.0, 230.0);
-    self.imageContainerView.center      = CGPointMake(160.0, 230.0);
+    self.imageContainerView.center      = self.view.center;
     self.imageBorderView.center         = self.imageContainerView.center; 
-    self.imageContainerImageView.center = self.imageContainerView.center;
 
         
     //
@@ -118,23 +117,11 @@ static BOOL     hasRunOnce              = NO;
         self.magnifier = [[MagnifyingGlass alloc] init];
         
         [self.magnifier createMagnifyingGlassWithFrame:[[UIScreen mainScreen] bounds]];
-        
-        self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
-
-/* 
-        self.magnifier.magnifyingGlassView  =  self.magnifierView;
-        self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
-        self.magnifier.magnifyingGlassLabel = self.magnifierLabel;
-        self.magnifier.magnifyingGlassImage = self.magnifiedImage;
-        self.magnifierLabel.alpha = 0.0;
-        self.magnifierView.backgroundColor = [UIColor clearColor];
-*/
  }
-    
-    hasRunOnce = YES;
-    
+
     NSLog(@"self.view.center = %f, %f", self.view.center.x, self.view.center.y);
     NSLog(@"self.imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
+    NSLog(@"self.magnifyingGlassView.center = %f, %f", self.magnifier.magnifyingGlassView.center.x, self.magnifier.magnifyingGlassView.center.y);
 }
 
 
@@ -143,17 +130,15 @@ static BOOL     hasRunOnce              = NO;
 {
     NSLog(@"\n\n-viewDidAppear\n\n");
     [super viewDidAppear:animated];
-     
-    self.view.center                = CGPointMake(160.0, 230.0);
-    self.imageContainerView.center  = CGPointMake(160.0, 230.0);
+
     
     NSLog(@"self.view.center = %f, %f", self.view.center.x, self.view.center.y);
     NSLog(@"self.imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
+    NSLog(@"self.magnifyingGlassView.center = %f, %f", self.magnifier.magnifyingGlassView.center.x, self.magnifier.magnifyingGlassView.center.y);
     
     if (pictureChosen) 
     {
         [self setNewImage:self.magnifiedImage inImageView:self.imageContainerImageView];
-        self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
     }
  
     //NSLog(@"image orientation = %u", self.worldMapImage.imageOrientation);
@@ -164,8 +149,12 @@ static BOOL     hasRunOnce              = NO;
     self.magnifier.magnifyingGlassImage = self.magnifiedImage;
     self.magnifierLabel.alpha = 0.0;
     self.magnifierView.backgroundColor = [UIColor clearColor];
+
+    self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
     
     [self.magnifier updateMagnifyingGlass];
+    
+    hasRunOnce = YES;
 }
 
 
@@ -233,34 +222,37 @@ static BOOL     hasRunOnce              = NO;
                                                newImageRect.origin.y, 
                                                newImageRect.size.width * 2.0, 
                                                newImageRect.size.height * 2.0);
-    NSLog(@"imageContainerView.frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
-    
-    self.imageContainerView.center = self.view.center;
+    self.imageContainerView.center = CGPointMake(160.0, 230.0);
     self.imageContainerView.backgroundColor = [UIColor yellowColor];
+    
+    NSLog(@"imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
+    NSLog(@"imageContainerView.frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
     
     
     //
     // This gives a nice white border around the image
     //
     self.imageBorderView.frame = CGRectMake(0.0, 
-                                             0.0, 
-                                             newImageRect.size.width + inset + offset, 
-                                             newImageRect.size.height + inset + offset);
+                                            0.0, 
+                                            newImageRect.size.width + inset + offset, 
+                                            newImageRect.size.height + inset + offset);
+    self.imageBorderView.center             = CGPointMake(self.imageContainerView.frame.size.width / 2.0, 
+                                                          self.imageContainerView.frame.size.height / 2.0);
     self.imageBorderView.layer.borderColor  = [[UIColor whiteColor] CGColor];
     self.imageBorderView.layer.borderWidth  = 5.0;
     self.imageBorderView.backgroundColor    = [UIColor blueColor];
-
-    self.imageBorderView.center = CGPointMake(self.imageContainerView.frame.size.width / 2.0, self.imageContainerView.frame.size.height / 2.0);
+    
+    
     
     //
     // Resize the image view containing the image to the dimensions of the resized rect.
     //
-    self.imageContainerImageView.center = self.imageContainerView.center;
-    self.imageContainerImageView.frame = CGRectMake(newImageRect.size.width / 4.0, 
-                                                    newImageRect.size.height / 4.0, 
-                                                    newImageRect.size.width * 0.5, 
-                                                    newImageRect.size.height * 0.5);
-    NSLog(@"worldMapImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
+//    self.imageContainerImageView.center = self.imageContainerView.center;
+//    self.imageContainerImageView.frame = CGRectMake(newImageRect.size.width / 4.0, 
+//                                                    newImageRect.size.height / 4.0, 
+//                                                    newImageRect.size.width * 0.5, 
+//                                                    newImageRect.size.height * 0.5);
+//    NSLog(@"imageContainerImageView frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
     self.imageContainerImageView.frame = CGRectMake(inset, 
                                                     inset, 
                                                     newImageRect.size.width, 
@@ -269,12 +261,15 @@ static BOOL     hasRunOnce              = NO;
 
 
     //self.imageContainerImageView.center = self.imageContainerView.center;
-    self.imageContainerImageView.center = CGPointMake(self.imageContainerView.frame.size.width / 2.0, self.imageContainerView.frame.size.height / 2.0);
-    
-    self.imageContainerImageView.layer.minificationFilter = kCAFilterTrilinear;
+    self.imageContainerImageView.center                     = CGPointMake(self.imageContainerView.frame.size.width / 2.0, 
+                                                                          self.imageContainerView.frame.size.height / 2.0);
+    self.imageContainerImageView.layer.minificationFilter   = kCAFilterTrilinear;
 	self.imageContainerImageView.layer.minificationFilterBias = 0;
 
     
+    //
+    // Now set the scaled image into the image view
+    //
     UIImage *tempImage = [anImage scaleToRect:newImageRect];
     NSLog(@"anImage scaled size = %f, %f", anImage.size.width, anImage.size.height);
     NSLog(@"tempImage scaled size = %f, %f", tempImage.size.width, tempImage.size.height);
@@ -334,7 +329,7 @@ static BOOL     hasRunOnce              = NO;
     //CGContextClearRect(context, screenRect);
     //CGContextClearRect(context, newImageSizeRect);
     
-    
+        
     
     //
     // Going to give the context a background fill before adding the image.
@@ -347,7 +342,7 @@ static BOOL     hasRunOnce              = NO;
     CGContextSaveGState(context);
 
 
-    CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
+    //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
     //CGContextScaleCTM(context, 0.5, 0.5);
     //CGContextTranslateCTM(context, newImageSize.width * 0.5, newImageSize.height * 0.5);

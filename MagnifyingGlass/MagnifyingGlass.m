@@ -81,7 +81,7 @@
     self.magnifyingGlassScale   =   1.0;
     self.magnifyingGlassLabel.alpha = 0.0;
     
-    self.magnifyingGlassView.center = CGPointMake(100.0, 100.0);
+    //self.magnifyingGlassView.center = CGPointMake(100.0, 100.0);
     
     [self updateMagnifyingGlass];
 }

@@ -28,7 +28,7 @@
 static CGFloat  kMaxHeight				= 380.0; // Defines maximum image height
 static CGFloat  kMaxWidth				= 280.0; // Defines maximum image width
 static BOOL     hasRunOnce              = NO;
-static BOOL     debugging               = YES;
+static BOOL     debugging               = NO;  // Toggle this on if you really need it. :D
 
 
 @interface MagnifyingGlassViewController () 
@@ -269,13 +269,7 @@ static BOOL     debugging               = YES;
                                                     inset, 
                                                     newImageRect.size.width, 
                                                     newImageRect.size.height);
-    
-    NSLog(@"image width scaling factor = %f", newImageRect.size.width / imageSize.width);
-    NSLog(@"image height scaling factor = %f", newImageRect.size.height / imageSize.height);
-    NSLog(@"image orientation = %i", anImage.imageOrientation);
-    
-    CGFloat scale = newImageRect.size.width / imageSize.width;
-    
+        
     self.imageContainerImageView.center                     = CGPointMake(self.imageContainerView.frame.size.width / 2.0, 
                                                                           self.imageContainerView.frame.size.height / 2.0);
     self.imageContainerImageView.layer.minificationFilter   = kCAFilterTrilinear;
@@ -310,6 +304,7 @@ static BOOL     debugging               = YES;
     
     NSLog(@"imageContainerImageView.frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
     
+    
     // 
     // Now set-up the image for the magnifying glass.
     //
@@ -343,7 +338,12 @@ static BOOL     debugging               = YES;
     // Going to give the context a background fill before adding the image.
     //
     CGContextAddRect(context, contextRect);
-    CGContextSetFillColorWithColor(context, [[UIColor yellowColor] CGColor]);
+    if (debugging) 
+    {
+        CGContextSetFillColorWithColor(context, [[UIColor yellowColor] CGColor]);
+    } else {
+        CGContextSetFillColorWithColor(context, [[UIColor colorWithRed:51.0 / 256.0 green:51.0 / 256.0 blue:51.0 / 256.0 alpha:1.0] CGColor]);
+    }
     CGContextFillRect(context, contextRect);
     
     
@@ -352,7 +352,13 @@ static BOOL     debugging               = YES;
     CGContextTranslateCTM(context, contextSize.width / 4.0, contextSize.height / 4.0);
     
     CGContextAddRect(context, newImageSizeRect);
-    CGContextSetFillColorWithColor(context, [[UIColor blueColor] CGColor]);
+    if (debugging) 
+    {
+        CGContextSetFillColorWithColor(context, [[UIColor blueColor] CGColor]);
+    } else {
+        CGContextSetFillColorWithColor(context, [[UIColor colorWithRed:51.0 / 256.0 green:51.0 / 256.0 blue:51.0 / 256.0 alpha:1.0] CGColor]);
+    }
+
     CGContextFillPath(context);
     
     
@@ -380,7 +386,6 @@ static BOOL     debugging               = YES;
     UIGraphicsPushContext(context);
     [anImage drawInRect:CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height)];
     UIGraphicsPopContext();
-    //NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
     
     
     CGContextRestoreGState(context);
@@ -392,6 +397,7 @@ static BOOL     debugging               = YES;
     self.magnifiedImage = UIGraphicsGetImageFromCurrentImageContext();
     NSLog(@"final image size = %f, %f", self.magnifiedImage.size.width, self.magnifiedImage.size.height);
     
+
     UIGraphicsEndImageContext();
 
     
@@ -490,8 +496,7 @@ static BOOL     debugging               = YES;
     NSLog(@"To resized imageRect = %f, %f, %f, %f", imageRect.origin.x, imageRect.origin.y, imageRect.size.width, imageRect.size.height);
     NSLog(@"Returning scaled image rect \n\n");
     
-    
-    
+        
     return imageRect;
 }
 

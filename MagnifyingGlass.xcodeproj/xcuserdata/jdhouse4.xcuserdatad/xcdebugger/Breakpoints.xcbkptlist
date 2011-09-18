@@ -9,11 +9,11 @@
          continueAfterRunningActions = "Yes"
          isPathRelative = "1"
          filePath = "MagnifyingGlass/MagnifyingGlassViewController.m"
-         timestampString = "338022636.638768"
+         timestampString = "338023429.119812"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1050"
-         endingLineNumber = "1050"
+         startingLineNumber = "1055"
+         endingLineNumber = "1055"
          landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
          landmarkType = "5">
          <Actions>

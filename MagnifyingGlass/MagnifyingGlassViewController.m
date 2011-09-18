@@ -28,7 +28,7 @@
 static CGFloat  kMaxHeight				= 380.0; // Defines maximum image height
 static CGFloat  kMaxWidth				= 280.0; // Defines maximum image width
 static BOOL     hasRunOnce              = NO;
-
+static BOOL     debugging               = YES;
 
 
 @interface MagnifyingGlassViewController () 
@@ -94,12 +94,12 @@ static BOOL     hasRunOnce              = NO;
     // Create the Gesture Recognizers
     //
     [self createGestureRecognizers];
- 
+    
     self.view.center                    = CGPointMake(160.0, 230.0);
     self.imageContainerView.center      = self.view.center;
     self.imageBorderView.center         = self.imageContainerView.center; 
-
-        
+    
+    
     //
     // Set the main background image conditioned on this being a first run.
     //
@@ -117,8 +117,14 @@ static BOOL     hasRunOnce              = NO;
         self.magnifier = [[MagnifyingGlass alloc] init];
         
         [self.magnifier createMagnifyingGlassWithFrame:[[UIScreen mainScreen] bounds]];
- }
-
+        
+        hasRunOnce = YES;
+    }
+    else
+    {
+        //[self.magnifiedImage = 
+    }
+    
     NSLog(@"self.view.center = %f, %f", self.view.center.x, self.view.center.y);
     NSLog(@"self.imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
     NSLog(@"self.magnifyingGlassView.center = %f, %f", self.magnifier.magnifyingGlassView.center.x, self.magnifier.magnifyingGlassView.center.y);
@@ -130,7 +136,7 @@ static BOOL     hasRunOnce              = NO;
 {
     NSLog(@"\n\n-viewDidAppear\n\n");
     [super viewDidAppear:animated];
-
+    
     
     NSLog(@"self.view.center = %f, %f", self.view.center.x, self.view.center.y);
     NSLog(@"self.imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
@@ -140,7 +146,7 @@ static BOOL     hasRunOnce              = NO;
     {
         [self setNewImage:self.magnifiedImage inImageView:self.imageContainerImageView];
     }
- 
+    
     //NSLog(@"image orientation = %u", self.worldMapImage.imageOrientation);
     
     
@@ -149,30 +155,30 @@ static BOOL     hasRunOnce              = NO;
     self.magnifier.magnifyingGlassImage = self.magnifiedImage;
     self.magnifierLabel.alpha = 0.0;
     self.magnifierView.backgroundColor = [UIColor clearColor];
-
+    
     self.magnifier.magnifyingGlassView.center = self.imageContainerImageView.center;
     
     [self.magnifier updateMagnifyingGlass];
     
-    hasRunOnce = YES;
+//    hasRunOnce = YES;
 }
 
 
-
+/*
 - (void)viewDidUnload
 {
     NSLog(@"\n\n-viewDidUnload\n\n");
     
     [self setImageTestingView:nil];
     [self setImageTestingImageView:nil];
-    [self setImageBorderView:nil];
+    //[self setImageBorderView:nil];
     [super viewDidUnload];
 }
-
+*/
 
 
 #pragma mark - Image Methods
-- (IBAction)setNewImage:(UIImage *)anImage inImageView:(UIImageView *)anImageView
+- (void)setNewImage:(UIImage *)anImage inImageView:(UIImageView *)anImageView
 {
     //
     //
@@ -191,7 +197,12 @@ static BOOL     hasRunOnce              = NO;
     //
     
     
-    NSLog(@"\n\n\n\n-setNewImage");
+    NSLog(@"\n\n\n\n-setNewImage:inImageView:");
+    
+    //
+    // Start by cleaning-up some memory
+    //
+    self.magnifiedImage = nil;
     
     
     //
@@ -206,7 +217,7 @@ static BOOL     hasRunOnce              = NO;
     //
     CGRect newImageRect = [self rectFromImage:anImage inView:self.imageContainerView];
     NSLog(@"newImageRect = (%f, %f, %f, %f)", newImageRect.origin.x, newImageRect.origin.y, newImageRect.size.width, newImageRect.size.height);
-   
+    
     
     //
     // Resize container view to the diminsions of the resized rect.
@@ -214,7 +225,7 @@ static BOOL     hasRunOnce              = NO;
     CGFloat inset   = 5.0;
     CGFloat offset  = 5.0;
     
-
+    
     //
     // Set-up the view and image view hierarchy of the image being brought in.
     //
@@ -223,7 +234,10 @@ static BOOL     hasRunOnce              = NO;
                                                newImageRect.size.width * 2.0, 
                                                newImageRect.size.height * 2.0);
     self.imageContainerView.center = CGPointMake(160.0, 230.0);
-    //self.imageContainerView.backgroundColor = [UIColor yellowColor];
+    if (debugging) 
+    {
+        self.imageContainerView.backgroundColor = [UIColor yellowColor];
+    }
     
     NSLog(@"imageContainerView.center = %f, %f", self.imageContainerView.center.x, self.imageContainerView.center.y);
     NSLog(@"imageContainerView.frame = %f, %f, %f, %f", self.imageContainerView.frame.origin.x, self.imageContainerView.frame.origin.y, self.imageContainerView.frame.size.width, self.imageContainerView.frame.size.height);
@@ -240,7 +254,11 @@ static BOOL     hasRunOnce              = NO;
                                                           self.imageContainerView.frame.size.height / 2.0);
     self.imageBorderView.layer.borderColor  = [[UIColor whiteColor] CGColor];
     self.imageBorderView.layer.borderWidth  = 5.0;
-    //self.imageBorderView.backgroundColor    = [UIColor blueColor];
+    if (debugging) 
+    {
+        self.imageBorderView.backgroundColor    = [UIColor blueColor];
+    }
+    NSLog(@"imageBorderView frame set.");
     
     
     
@@ -251,25 +269,47 @@ static BOOL     hasRunOnce              = NO;
                                                     inset, 
                                                     newImageRect.size.width, 
                                                     newImageRect.size.height);
+    
+    NSLog(@"image width scaling factor = %f", newImageRect.size.width / imageSize.width);
+    NSLog(@"image height scaling factor = %f", newImageRect.size.height / imageSize.height);
+    NSLog(@"image orientation = %i", anImage.imageOrientation);
+    
+    CGFloat scale = newImageRect.size.width / imageSize.width;
+    
     self.imageContainerImageView.center                     = CGPointMake(self.imageContainerView.frame.size.width / 2.0, 
                                                                           self.imageContainerView.frame.size.height / 2.0);
     self.imageContainerImageView.layer.minificationFilter   = kCAFilterTrilinear;
 	self.imageContainerImageView.layer.minificationFilterBias = 0;
-    NSLog(@"imageContainerImageView.frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
+        
+    self.imageContainerImageView.image = anImage;
+    if (debugging) 
+    {
+        self.imageContainerImageView.alpha = 0.5;
+    }
     
     
     //
     // Now set the scaled image into the image view
     //
-    UIImage *tempImage = [anImage scaleToRect:newImageRect];
-    NSLog(@"anImage scaled size = %f, %f", anImage.size.width, anImage.size.height);
-    NSLog(@"tempImage scaled size = %f, %f", tempImage.size.width, tempImage.size.height);
-
+    //
+    // Ok, this didn't help much...so don't assume its use will help.
+    //
+//    UIImage *tempImage = [anImage scaleToRect:newImageRect];
+//    self.imageContainerImageView.image = tempImage;
+//    NSLog(@"anImage scaled size = %f, %f", anImage.size.width, anImage.size.height);
+//    NSLog(@"tempImage scaled size = %f, %f", tempImage.size.width, tempImage.size.height);
     
-    self.imageContainerImageView.image = tempImage;
-    self.imageContainerImageView.alpha = 0.5;
-
-
+    
+    //
+    // NOTE: 
+    // self.imageContainerImageView.image = [UIImage imageWithCGImage:anImage.CGImage scale:scale orientation:anImage.imageOrientation];
+    // was less helpful than if either of my Labs Samantha or Victoria had helped me write code.
+    //
+    //
+    //self.imageContainerImageView.image = [UIImage imageWithCGImage:anImage.CGImage scale:scale orientation:anImage.imageOrientation];
+    
+    NSLog(@"imageContainerImageView.frame = %f, %f, %f, %f", self.imageContainerImageView.frame.origin.x, self.imageContainerImageView.frame.origin.y, self.imageContainerImageView.frame.size.width, self.imageContainerImageView.frame.size.height);
+    
     // 
     // Now set-up the image for the magnifying glass.
     //
@@ -284,41 +324,20 @@ static BOOL     hasRunOnce              = NO;
     // won't fit into the screen. If I want the actual image, the pre-scaled image at its max zoom, then I need to do two things, 
     // inverse the scale of the actual image and keep track of where the magnifying glass is relative to the displayed image and the 
     // magnified image. Yuck!
-    //
-    //CGRect screenRect = CGRectMake(-inset * 2.0, -inset * 2.0, newImageRect.size.width + 2.0 * offset, newImageRect.size.height + 2.0 * offset);
-    
-//    CGSize newImageSize = CGSizeMake(newImageRect.size.width + inset + offset, newImageRect.size.height + inset + offset);
-    //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
-
+    //    
     
     CGSize newImageSize = CGSizeMake(newImageRect.size.width, newImageRect.size.height);
-
-    //CGRect newImageSizeRect = CGRectMake(-100.0, -100.0, newImageSize.width + 100.0, newImageSize.height + 100.0);
+    
     CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
-    //UIGraphicsBeginImageContextWithOptions(newImageSize, NO, 0);
-
-
+    
+    
     CGSize contextSize  = CGSizeMake(newImageSize.width * 2.0, newImageSize.height * 2.0);
     CGRect contextRect  = CGRectMake(0.0, 0.0, contextSize.width, contextSize.height);
-    //CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
     UIGraphicsBeginImageContextWithOptions(contextSize, NO, 0);
     
     
-    //UIGraphicsBeginImageContextWithOptions([[UIScreen mainScreen] bounds].size, NO, 0);
-    //NSLog(@"[[UIScreen mainScreen]bounds] = %f, %f, %f, %f", [[UIScreen mainScreen]bounds].origin.x, [[UIScreen mainScreen]bounds].origin.y, [[UIScreen mainScreen]bounds].size.width, [[UIScreen mainScreen]bounds].size.height);
-    
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    //CGRect tempRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
-    //CGRect tempRect = CGRectMake(inset + 50.0, inset + 50.0, newImageRect.size.width, newImageRect.size.height);
-    
-    //CGContextClearRect(context, tempRect);
-    //CGContextClearRect(context, newImageRect);
-    //CGContextClearRect(context, [[UIScreen mainScreen]bounds]);
-    //CGContextClearRect(context, screenRect);
-    //CGContextClearRect(context, newImageSizeRect);
-    
-        
     
     //
     // Going to give the context a background fill before adding the image.
@@ -329,16 +348,8 @@ static BOOL     hasRunOnce              = NO;
     
     
     CGContextSaveGState(context);
-
-
-    //CGContextConcatCTM(context, CGContextGetUserSpaceToDeviceSpaceTransform(context));
     
-    //CGContextScaleCTM(context, 0.5, 0.5);
-    //CGContextTranslateCTM(context, newImageSize.width * 0.5, newImageSize.height * 0.5);
     CGContextTranslateCTM(context, contextSize.width / 4.0, contextSize.height / 4.0);
-    //CGContextScaleCTM(context, 1.0, -1.0);
-
-    
     
     CGContextAddRect(context, newImageSizeRect);
     CGContextSetFillColorWithColor(context, [[UIColor blueColor] CGColor]);
@@ -362,46 +373,12 @@ static BOOL     hasRunOnce              = NO;
     [[UIColor whiteColor] setStroke];
     [borderPath stroke];
     
-    
-//    CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y / 1.0);
-//    CGContextScaleCTM(context, 1.0, -1.0);
-//    CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y / 1.0);
-
-    /*
-     CGContextTranslateCTM(context, self.worldMapView.center.x, self.worldMapView.center.y);
-     CGContextScaleCTM(context, 1.0, -1.0);
-     CGContextTranslateCTM(context, -self.worldMapView.center.x, -self.worldMapView.center.y);
-     */
-    
-    
-    /*
-    //
-    // Offset by the portion of the bounds left of and above the anchor point
-    //
-    CGContextTranslateCTM(context,
-                          -[self.worldMapView bounds].size.width * [[self.worldMapView layer] anchorPoint].x,
-                          -[self.worldMapView bounds].size.height * [[self.worldMapView layer] anchorPoint].y);
-    
-    */
-    
-    //CGContextRestoreGState(context);
-    
-    //CGContextDrawImage(context, tempRect, anImage.CGImage);
-    //CGContextDrawImage(context, newImageRect, anImage.CGImage);
-    
-    //[self renderView:self.view inContext:context];
-    
-    //[self renderView:self.imageBoarderView inContext:context];
-    //NSLog(@"Rendering imageBoarderView sized @ %f, %f, %f, %f", self.imageBorderView.frame.origin.x, self.imageBorderView.frame.origin.y, self.imageBorderView.frame.size.width, self.imageBorderView.frame.size.height);
-    
+        
     //
     // This is where the image is drawn to the origin of the image rect.
     //
     UIGraphicsPushContext(context);
-    //[anImage drawAtPoint:CGPointMake(newImageRect.origin.x, newImageRect.origin.y)];
-    //[anImage drawInRect:CGRectMake(-50.0, -50.0, newImageSize.width + 100.0, newImageSize.height + 100.0)];
     [anImage drawInRect:CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height)];
-    //[anImage drawInRect:newImageRect];
     UIGraphicsPopContext();
     //NSLog(@"Rendering image sized @ %f, %f, %f, %f", tempRect.origin.x, tempRect.origin.y, tempRect.size.width, tempRect.size.height);
     
@@ -416,31 +393,30 @@ static BOOL     hasRunOnce              = NO;
     NSLog(@"final image size = %f, %f", self.magnifiedImage.size.width, self.magnifiedImage.size.height);
     
     UIGraphicsEndImageContext();
-    
-    //self.imageTestingImageView.image = self.worldMapImage;
 
+    
     
     //
     // Core Image Code
     //
-//    CGRect imageTestingRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
-//    CIImage *tempCoreImage = [CIImage imageWithCGImage:anImage.CGImage];
-//    CGRect tempCoreImageRect = [tempCoreImage extent];
-//    NSLog(@"tempCoreImageRect = %f, %f, %f, %f", tempCoreImageRect.origin.x, tempCoreImageRect.origin.y, tempCoreImageRect.size.width, tempCoreImageRect.size.height);
-//    CGAffineTransform transform = CGAffineTransformMakeScale(10.0, 10.0);
-//    tempCoreImage = [tempCoreImage imageByApplyingTransform:transform];
-
-//    CIFilter *scaleAdjust = [CIFilter filterWithName:@"CIAffineTransform"];
-//    [scaleAdjust setDefaults];
-//    [scaleAdjust setValue:tempCoreImage forKey:@"inputImage"];
-//    [scaleAdjust setValue:5.0 forKey:@"inputTransform"];
+    //    CGRect imageTestingRect = CGRectMake(0.0, 0.0, newImageRect.size.width, newImageRect.size.height);
+    //    CIImage *tempCoreImage = [CIImage imageWithCGImage:anImage.CGImage];
+    //    CGRect tempCoreImageRect = [tempCoreImage extent];
+    //    NSLog(@"tempCoreImageRect = %f, %f, %f, %f", tempCoreImageRect.origin.x, tempCoreImageRect.origin.y, tempCoreImageRect.size.width, tempCoreImageRect.size.height);
+    //    CGAffineTransform transform = CGAffineTransformMakeScale(10.0, 10.0);
+    //    tempCoreImage = [tempCoreImage imageByApplyingTransform:transform];
     
-//    CIContext *ciContext = [CIContext contextWithOptions:nil];
+    //    CIFilter *scaleAdjust = [CIFilter filterWithName:@"CIAffineTransform"];
+    //    [scaleAdjust setDefaults];
+    //    [scaleAdjust setValue:tempCoreImage forKey:@"inputImage"];
+    //    [scaleAdjust setValue:5.0 forKey:@"inputTransform"];
+    
+    //    CIContext *ciContext = [CIContext contextWithOptions:nil];
     
     //UIImage *ciImage = [UIImage imageWithCIImage:tempCoreImage]; // This will not work!
-//    UIImage *ciImage = [UIImage imageWithCGImage:[ciContext createCGImage:tempCoreImage fromRect:CGRectMake(0, 0, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale])]];
-//    NSLog(@"ciImage size = %f, %f", ciImage.size.width, ciImage.size.height);
-//    self.ImageTestingImageView.image = ciImage;
+    //    UIImage *ciImage = [UIImage imageWithCGImage:[ciContext createCGImage:tempCoreImage fromRect:CGRectMake(0, 0, newImageRect.size.width * [[UIScreen mainScreen] scale], newImageRect.size.height * [[UIScreen mainScreen] scale])]];
+    //    NSLog(@"ciImage size = %f, %f", ciImage.size.width, ciImage.size.height);
+    //    self.ImageTestingImageView.image = ciImage;
     
     NSLog(@"\n\n");
 }
@@ -464,7 +440,6 @@ static BOOL     hasRunOnce              = NO;
 	//
 	////////////////////////////////////////////////////
     
-    NSLog(@"\n\n-rectFromImage:anImage:inView:");
     NSLog(@"Image size = %f, %f", anImage.size.width, anImage.size.height);
     NSLog(@"Resizing rect of size = %f, %f", aView.frame.size.width, aView.frame.size.height);
     
@@ -474,7 +449,7 @@ static BOOL     hasRunOnce              = NO;
 	CGFloat imageScaleHeight    = kMaxHeight / anImage.size.height;
     
     NSLog(@"scaled width and height = %f, %f", imageScaleWidth, imageScaleHeight);
-	    
+    
     if (imageScaleWidth > 1.0 || imageScaleHeight > 1.0) 
     {
         imageScaleWidth     = 1.0;
@@ -506,14 +481,14 @@ static BOOL     hasRunOnce              = NO;
     
     NSLog(@"aView center = %f, %f", aView.center.x, aView.center.y);
     
-
+    
 	imageRect           = CGRectMake(aView.center.x - imageResizedWidth / 2.0, // origin.x
-                                      aView.center.y - imageResizedHeight / 2.0, // origin.y
-                                      imageResizedWidth, // width
-                                      imageResizedHeight); // height
+                                     aView.center.y - imageResizedHeight / 2.0, // origin.y
+                                     imageResizedWidth, // width
+                                     imageResizedHeight); // height
     
     NSLog(@"To resized imageRect = %f, %f, %f, %f", imageRect.origin.x, imageRect.origin.y, imageRect.size.width, imageRect.size.height);
-    NSLog(@"\n\n");
+    NSLog(@"Returning scaled image rect \n\n");
     
     
     
@@ -852,13 +827,13 @@ static BOOL     hasRunOnce              = NO;
 
 #pragma mark - View controller rotation methods
 /*
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations.
-    
-    return (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight);
-}
-*/
+ - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+ {
+ // Return YES for supported orientations.
+ 
+ return (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight);
+ }
+ */
 
 
 
@@ -899,9 +874,9 @@ static BOOL     hasRunOnce              = NO;
 	NSLog(@"-choosePhoto:");
 	
 	choosePhotoAction = [[UIActionSheet alloc] initWithTitle:@"Choose A New Image" 
-													 delegate:self cancelButtonTitle:@"Cancel" 
-									   destructiveButtonTitle:nil 
-											otherButtonTitles:@"Camera", @"Photo Library", nil];
+                                                    delegate:self cancelButtonTitle:@"Cancel" 
+                                      destructiveButtonTitle:nil 
+                                           otherButtonTitles:@"Camera", @"Photo Library", nil];
 	
 	choosePhotoAction.delegate = self;
 	
@@ -1004,7 +979,7 @@ static BOOL     hasRunOnce              = NO;
 									  otherButtonTitles:nil];
 				
 				[alert show];
-//				[self moveOptionsViewOffScreen];
+                //				[self moveOptionsViewOffScreen];
 			}
 		}
 		
@@ -1072,13 +1047,21 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     NSLog(@"image orientation = %u", newImage.imageOrientation);
     NSLog(@"newImage size = %f, %f", newImage.size.width, newImage.size.height);
 	
-    //self.magnifiedImage = newImage;
-    self.magnifiedImage = [UIImage imageWithCGImage:newImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:newImage.imageOrientation];
+    self.magnifiedImage = newImage;
+    
+    //
+    // Don't use this when importing an image from image picker controller. It will ruin your life, 
+    // cause you hours of suffering and in the end confuse you like it did me. Yes, it may save you 
+    // memory. But just as that is no longer the issue for Mac programmers today that it once was in
+    // the early days, eventually memory warnings will disappear on iOS devices, as will the need to
+    // be anal about imported image sizes.
+    //
+    //self.magnifiedImage = [UIImage imageWithCGImage:newImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:newImage.imageOrientation];
     
 	[[picker parentViewController] dismissModalViewControllerAnimated:YES];	
 	
 	
-	//	NSLog(@"finished image picker dismiss\n\n");
+	NSLog(@"finished image picker dismiss\n\n");
 	NSLog(@"\n\n");
 }
 
@@ -1096,5 +1079,19 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 }
 
 
+
+
+#pragma mark Debugging Method
+- (IBAction)toggleDebugging:(id)sender
+{
+    if (debugging) 
+    {
+        debugging = NO; 
+    }
+    else
+    {
+        debugging = YES;
+    }
+}
 
 @end

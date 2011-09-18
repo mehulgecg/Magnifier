@@ -47,17 +47,21 @@
 @property (nonatomic, retain)           UIPanGestureRecognizer      *panResizeRecognizer;
 
 @property (nonatomic, retain)           UIImagePickerController     *imagePicker;
-@property (nonatomic, strong) IBOutlet UIView                       *imageTestingView;
-@property (nonatomic, strong) IBOutlet UIImageView                  *imageTestingImageView;
+@property (nonatomic, strong) IBOutlet  UIView                      *imageTestingView;
+@property (nonatomic, strong) IBOutlet  UIImageView                 *imageTestingImageView;
 
 
 // MagnifyingGlass Public Methods
 //- (IBAction)updateMagnifyingGlass;
 
 // Method to add a new image...not sure if this'll be in Magnifying Glass or not.
-- (IBAction)setNewImage:(UIImage *)anImage inImageView:(UIView *)anImageView;
+- (void)setNewImage:(UIImage *)anImage inImageView:(UIView *)anImageView;
 
 // View Controller Action Method
 - (IBAction)showInfo:(id)sender;
+
+
+// Turns debugging colors on/off in UIViews
+- (IBAction)toggleDebugging:(id)sender;
 
 @end

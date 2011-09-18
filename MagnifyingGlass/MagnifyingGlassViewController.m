@@ -326,6 +326,23 @@ static BOOL     debugging               = NO;  // Toggle this on if you really n
     CGRect newImageSizeRect = CGRectMake(0.0, 0.0, newImageSize.width, newImageSize.height);
     
     
+    //
+    // This needs to be corrected by first testing for whether the OS version of UIImage will respond
+    // to selector,
+    // +imageWithCGImage:scale:orientation: and using the [[UIScreen mainScreen] scale]
+    // else use
+    // +imageWithCGImage:
+    //
+    /* Here's a good example:
+     if([UIImage respondsToSelector:@selector(imageWithCGImage:scale:orientation:)]) 
+     {
+        float scale = [[UIScreen mainScreen] scale];
+        image = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
+     } else 
+     {
+        image = [UIImage imageWithCGImage:imageRef];
+     }
+    */
     CGSize contextSize  = CGSizeMake(newImageSize.width * 2.0, newImageSize.height * 2.0);
     CGRect contextRect  = CGRectMake(0.0, 0.0, contextSize.width, contextSize.height);
     UIGraphicsBeginImageContextWithOptions(contextSize, NO, 0);

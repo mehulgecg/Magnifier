@@ -31,6 +31,10 @@
 		E6BD64E7138B887900E8BFB2 /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E6BD64E6138B887900E8BFB2 /* InfoView.xib */; };
 		E6BD64EB138B88E600E8BFB2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6BD64EA138B88E600E8BFB2 /* QuartzCore.framework */; };
 		E6EFDEE113A0085C00A4A7C7 /* MagnifyingGlass.m in Sources */ = {isa = PBXBuildFile; fileRef = E6EFDEE013A0085C00A4A7C7 /* MagnifyingGlass.m */; };
+		E6F7247114593DB6005E17DE /* Steve_Apple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6F7247014593DB6005E17DE /* Steve_Apple@2x.png */; };
+		E6F7247414593DBB005E17DE /* Steve_Apple.png in Resources */ = {isa = PBXBuildFile; fileRef = E6F7247314593DBB005E17DE /* Steve_Apple.png */; };
+		E6F7247614593E3A005E17DE /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = E6F7247514593E3A005E17DE /* Default.png */; };
+		E6F7247814593E48005E17DE /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6F7247714593E48005E17DE /* Default@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +71,10 @@
 		E6BD64EA138B88E600E8BFB2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E6EFDEDF13A0085C00A4A7C7 /* MagnifyingGlass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifyingGlass.h; sourceTree = "<group>"; };
 		E6EFDEE013A0085C00A4A7C7 /* MagnifyingGlass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifyingGlass.m; sourceTree = "<group>"; };
+		E6F7247014593DB6005E17DE /* Steve_Apple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Steve_Apple@2x.png"; sourceTree = "<group>"; };
+		E6F7247314593DBB005E17DE /* Steve_Apple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Steve_Apple.png; sourceTree = "<group>"; };
+		E6F7247514593E3A005E17DE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		E6F7247714593E48005E17DE /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +97,10 @@
 		E6BD648F138B87A700E8BFB2 = {
 			isa = PBXGroup;
 			children = (
+				E6F7247714593E48005E17DE /* Default@2x.png */,
+				E6F7247514593E3A005E17DE /* Default.png */,
+				E6F7247314593DBB005E17DE /* Steve_Apple.png */,
+				E6F7247014593DB6005E17DE /* Steve_Apple@2x.png */,
 				E6BD64A6138B87A700E8BFB2 /* MagnifyingGlass */,
 				E6BD649D138B87A700E8BFB2 /* Frameworks */,
 				E6BD649B138B87A700E8BFB2 /* Products */,
@@ -235,6 +247,10 @@
 				E6B368BA13A27EE2008FE4B8 /* Image_Selection_Button.png in Resources */,
 				E6B368BB13A27EE2008FE4B8 /* CameraIcon.png in Resources */,
 				E6B368BF13A27F5D008FE4B8 /* CameraIcon@2x.png in Resources */,
+				E6F7247114593DB6005E17DE /* Steve_Apple@2x.png in Resources */,
+				E6F7247414593DBB005E17DE /* Steve_Apple.png in Resources */,
+				E6F7247614593E3A005E17DE /* Default.png in Resources */,
+				E6F7247814593E48005E17DE /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

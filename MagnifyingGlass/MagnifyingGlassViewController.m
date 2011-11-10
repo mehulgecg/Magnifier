@@ -986,7 +986,10 @@ static BOOL     debugging               = NO;  // Toggle this on if you really n
 				
 				picker.delegate					= self;
 				
-				[self presentModalViewController:picker animated:YES];
+				//[self presentModalViewController:picker animated:YES];
+                [self presentViewController:picker animated:YES completion:^{
+                    NSLog(@"I'm pickin' a picture!");
+                }];
 				
 				NSLog(@"\n\n");
 			}
@@ -1016,7 +1019,10 @@ static BOOL     debugging               = NO;  // Toggle this on if you really n
 				picker.delegate					= self;
 				
 				// Picker is displayed asynchronously.
-				[self presentModalViewController:picker animated:YES];
+				//[self presentModalViewController:picker animated:YES];
+                [self presentViewController:picker animated:YES completion:^{
+                    NSLog(@"I'm pickin' a picture!");
+                }];
 				
 				NSLog(@"\n\n");
 			} 		
@@ -1080,7 +1086,12 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     //
     //self.magnifiedImage = [UIImage imageWithCGImage:newImage.CGImage scale:[[UIScreen mainScreen]scale] orientation:newImage.imageOrientation];
     
-	[[picker parentViewController] dismissModalViewControllerAnimated:YES];	
+	//[[picker parentViewController] dismissModalViewControllerAnimated:YES];	
+	
+    if([picker parentViewController] != nil)
+		[[picker parentViewController] dismissModalViewControllerAnimated:YES];
+	else
+		[[picker presentingViewController] dismissModalViewControllerAnimated:YES];
 	
 	
 	NSLog(@"finished image picker dismiss\n\n");
